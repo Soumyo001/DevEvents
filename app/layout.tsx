@@ -4,6 +4,8 @@ import { Toaster } from "sonner";
 import AppThemeProvider from "@/components/providers/app-theme-provider";
 import LightRays from '@/components/LightRays';
 import "./globals.css";
+import NavBar from "@/components/navbar";
+import { NavList } from "@/lib/data/constants";
 
 const schibstedGrotesk = Schibsted_Grotesk({
   variable: "--font-schibsted-grotesk",
@@ -41,6 +43,9 @@ export default function RootLayout({
       className={`${schibstedGrotesk.variable} ${martianMono.variable} ${inter.variable} h-full antialiased`}
     >
       <body className="min-h-screen flex flex-col">
+        <NavBar
+          items={NavList}
+        />
         <div className="absolute inset-0 top-0 z-[-1] min-h-screen">
           <LightRays
             raysOrigin="top-center-offset"
@@ -60,7 +65,7 @@ export default function RootLayout({
         </div>
         <AppThemeProvider>
           <main 
-            className="container mx-auto flex-1 min-w-0 w-full flex flex-col sm:px-10 px-5 py-10"
+            className="container mx-auto mt-20 flex-1 min-w-0 w-full flex flex-col sm:px-10 px-5 py-10"
           >
             {children}
           </main>

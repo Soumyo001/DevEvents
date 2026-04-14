@@ -11,14 +11,16 @@ const ExploreButton = ({onClick}: {onClick: ()=>void}) => {
         onClick={onClick}
     >
         Explore Events
-        <Image
-            src="/icons/arrow-down.svg"
-            alt="arrow-down"
-            width={24}
-            height={24}
-        />
+        <div className='relative w-6 h-6 overflow-hidden'>
+          <Image
+              src="/icons/arrow-down.svg"
+              alt="arrow-down"
+              fill
+              className='object-cover'
+          />
+        </div>
     </Button>
   )
 }
 
-export default ExploreButton
+export default ExploreButton;
