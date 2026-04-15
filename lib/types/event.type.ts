@@ -29,6 +29,8 @@ export type EventItem = {
     end_date: string;
     start_time: string;
     end_time: string;
+    registration_deadline: string;
+    capacity: number|null;
     venue: Venue;
     agenda: Agenda[];
     audience: string[];

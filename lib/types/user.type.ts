@@ -1,6 +1,6 @@
 export type User = {
     _id: string;
+    clerk_id: string;
     email: string;
-    password?: string;
     role: "user"|"admin";
 }
