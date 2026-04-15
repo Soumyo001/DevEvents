@@ -1,7 +1,7 @@
-export const NavList = [
+export const AdminNavBarItem = [
     {
         name: "Home",
-        url: "/"
+        url: "/home"
     },
     {
         name: "Events",

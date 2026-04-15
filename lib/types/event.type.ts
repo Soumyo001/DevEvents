@@ -19,6 +19,7 @@ export type Organizer = {
 }
 
 export type EventItem = {
+    _id: string;
     title: string;
     description: string;
     slug: string;

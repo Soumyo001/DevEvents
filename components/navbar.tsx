@@ -2,6 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import { NavItem } from '@/lib/types';
 import Image from 'next/image';
+import { UserButton } from '@clerk/nextjs';
 
 const NavBar = ({items = []}: {items: NavItem[]}) => {
   return (
@@ -10,7 +11,7 @@ const NavBar = ({items = []}: {items: NavItem[]}) => {
             className='flex flex-row justify-between items-center max-sm:px-5 px-10 py-4 gap-4'
         >
             <Link
-                href="/"
+                href="/home"
                 className='flex flex-row items-center gap-2'
             >
                 <Image
@@ -26,18 +27,21 @@ const NavBar = ({items = []}: {items: NavItem[]}) => {
                 </p>
             </Link>
 
-            <ul
-                className='flex flex-row items-center gap-6'
-            >
-                {items.map((item, idx) => (
-                    <Link 
-                        key={idx}
-                        href={item.url}
-                    >
-                        {item.name}
-                    </Link>
-                ))}
-            </ul>
+            <div className='flex flex-row items-center gap-6'>
+                <ul
+                    className='flex flex-row items-center gap-6'
+                >
+                    {items.map((item, idx) => (
+                        <Link 
+                            key={idx}
+                            href={item.url}
+                        >
+                            {item.name}
+                        </Link>
+                    ))}
+                </ul>
+                <UserButton/>
+            </div>
         </nav>
     </header>
   )
