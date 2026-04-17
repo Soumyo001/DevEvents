@@ -20,7 +20,7 @@ import { useSignIn } from "@clerk/nextjs/legacy";
 import { signInSchema, signInSchemaType } from "@/lib/validator/schema_validator/sign-in.schema";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-
+import { toast } from "sonner";
 
 const page = () => {
   const [authError, setAuthError] = useState<string|null>(null);
@@ -45,13 +45,32 @@ const page = () => {
       const result = await signIn.create({identifier: data.identifier, password: data.password});
       if(result.status === "complete") {
         await setActive({session: result.createdSessionId});
+        const res = await fetch("/api/user");
+        if(res.status === 404) {
+          toast.warning("User not synced.");
+          await toast.promise(
+            fetch("/api/user", {
+              method: "POST",
+              headers: {"Content-Type": "application/json"},
+              body: JSON.stringify({email: data.identifier})
+            }).then(async res => {
+              const body = await res.json();
+              if(!res.ok) throw new Error(body.message);
+              return body.message;
+            }),
+            {
+              loading: "Syncing now...",
+              success: data => data,
+              error: (err: Error) => err.message ?? "Failed to sync account. You can retry sync on your next login"
+            }
+          );
+        }
         router.push("/home");
       } else {
         setAuthError("Authentication failed. Please try again.");
-        router.refresh();
       }
     } catch (err: any) {
-      setAuthError(err.errors?.[0]?.longMessage ?? `Unknown error occured: ${err}`);
+      setAuthError(err.errors?.[0]?.longMessage ?? `Unknown error occurred: ${err}`);
     }
   }
 

@@ -11,15 +11,16 @@ export default async function connect() {
         case 2:
             console.log("Connecting...");
             break;
-        case 3:
+        default:
             try {
                 await mongoose.connect(MONGODB_URI!, {
-                    dbName: "DevEvents",
+                    dbName: "dev_events",
                     bufferCommands: true,
                 });
             } catch (err: any) {
                 console.log("MongoDB Connection Error: ", err);
                 throw new Error("MongoDB Connection Error: ", err);
             }
+            break;
     }
 }

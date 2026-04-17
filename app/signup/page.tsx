@@ -20,6 +20,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 const page = () => {
   const [verifying, setVerifying] = useState<boolean>(false);
@@ -63,13 +64,28 @@ const page = () => {
       const result = await signUp.attemptEmailAddressVerification({code: code});
       if(result.status === "complete") {
         await setActive({session: result.createdSessionId});
+        await toast.promise(
+          fetch("/api/user", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({email: signUp.emailAddress})
+          }).then(async res => {
+            const body = await res.json();
+            if(!res.ok) throw new Error(body.message);
+            return body.message;
+          }),
+          {
+            loading: "Setting up your account...",
+            success: data => data,
+            error: (err: Error) => err.message ?? "Failed to sync account. You can retry sync on your next login"
+          }
+        );
         router.push("/home");
       } else {
-        setVerificationError("Verification failed. please try again");
-        router.refresh();
+        setVerificationError("Verification failed. Please try again");
       }
     } catch (err: any) {
-      setVerificationError(err.errors?.[0]?.longMessage ?? `Unknown error occured: ${err}`);
+      setVerificationError(err.errors?.[0]?.longMessage ?? `Unknown error occurred: ${err}`);
     } finally {
       setIsVerifying(false);
     }
