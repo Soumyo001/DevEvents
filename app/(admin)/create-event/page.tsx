@@ -129,12 +129,21 @@ export default function CreateEventPage() {
                   />
                 </Field>
                 <Field>
-                  <FieldLabel htmlFor="tags">Tags</FieldLabel>
+                  <FieldLabel>Tags</FieldLabel>
                   <TagInput
                     placeholder="Search or add tags..."
                     suggestions={["Hackathon", "Conference", "Meetup", "Workshop","Webinar", "Bootcamp", "Summit", "Open Source"]}
                     value={watch("tags")}
                     onChange={(val: string[]) => setValue("tags", val)}
+                  />
+                </Field>
+                <Field>
+                  <FieldLabel>Audience</FieldLabel>
+                  <TagInput
+                    placeholder="Search or add audience..."
+                    suggestions={["Developers", "DevOps Engineers", "Designers","Data Scientists", "Students", "Tech Leads", "CTOs"]}
+                    value={watch("audience")}
+                    onChange={(val: string[]) => setValue("audience", val)}
                   />
                 </Field>
               </FieldGroup>

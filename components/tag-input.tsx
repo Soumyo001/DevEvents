@@ -94,7 +94,11 @@ const TagInput = ({placeholder, suggestions, value, onChange}: props) => {
                     />
                 </div>
             </PopoverTrigger>
-            <PopoverContent>
+            <PopoverContent
+                className="w-64 p-0"
+                align="start"
+                onOpenAutoFocus={(e) => e.preventDefault()}
+            >
                 <Command>
                     <CommandList>
                         <CommandEmpty>
