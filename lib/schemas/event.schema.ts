@@ -17,8 +17,8 @@ const VenueSchema = new Schema(
 
 const AgendaSchema = new Schema(
   {
-    start_time: {type: String, required: true},
-    end_time: {type: String, required: true},
+    start_datetime: {type: Date, required: true},
+    end_datetime: {type: Date, required: true},
     title: {type: String, required: true},
     description: {type: String},
   }, {_id: false}
@@ -38,10 +38,8 @@ const EventSchema = new Schema(
     slug: {type: String, required: true, unique: true, lowercase: true, trim: true},
     image: {type: String},
     timezone: {type: String, default: "America/Los_Angeles"},
-    start_date: {type: Date, required: true},
-    end_date: {type: Date, required: true},
-    start_time: {type: String, required: true},
-    end_time: {type: String, required: true},
+    start_datetime: {type: Date, required: true},
+    end_datetime: {type: Date, required: true},
     registration_deadline: {type: Date, required: true},
     capacity: {type: Number, default: null},
     venue: {type: VenueSchema, required: true},

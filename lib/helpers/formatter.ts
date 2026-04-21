@@ -5,3 +5,14 @@ export const formatDate = (date: string) => {
         day: "numeric"
     });
 }
+
+export const formatTimezone = (tz: string) => {
+    const offset = new Intl.DateTimeFormat("en", {
+        timeZone:     tz,
+        timeZoneName: "shortOffset",
+    })
+    .formatToParts()
+    .find((p) => p.type === "timeZoneName")?.value ?? "";
+
+    return `${tz.replace(/_/g, " ")}  (${offset})`;
+};

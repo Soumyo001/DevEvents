@@ -7,8 +7,8 @@ export type Venue = {
 }
 
 export type Agenda = {
-    start_time: string;
-    end_time: string;
+    start_datetime: string;
+    end_datetime: string;
     title: string;
     description?: string;
 }
@@ -25,10 +25,8 @@ export type EventItem = {
     slug: string;
     image?: string;
     timezone: string;
-    start_date: string;
-    end_date: string;
-    start_time: string;
-    end_time: string;
+    start_datetime: string;
+    end_datetime: string;
     registration_deadline: string;
     capacity: number|null;
     venue: Venue;
