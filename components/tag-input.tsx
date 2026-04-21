@@ -26,7 +26,7 @@ const TagInput = ({placeholder, suggestions, value, onChange}: props) => {
     const [query, setQuery] = useState<string>("");
     const inputRef = useRef<HTMLInputElement>(null);
     const filter = suggestions.filter(
-        (val: string) => val.toLowerCase().includes(query.toLowerCase()) 
+        (val) => val.toLowerCase().includes(query.toLowerCase())
             && value.every(selectedVal => selectedVal.toLowerCase() !== val.toLowerCase())
     );
 
@@ -41,7 +41,7 @@ const TagInput = ({placeholder, suggestions, value, onChange}: props) => {
     }
 
     const removeItem = (item: string) => {
-        onChange(value.filter((val) => val !== item));
+        onChange(value.filter(val => val !== item));
     }
 
     const handleKeyEvent = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -59,7 +59,7 @@ const TagInput = ({placeholder, suggestions, value, onChange}: props) => {
         <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
                 <div
-                    className="flex flex-wrap items-center w-full min-h-10 gap-2 bg-muted border-2 border-border rounded-md p-2"
+                    className="flex flex-wrap items-center w-full min-h-10 bg-muted rounded-md border-2 border-border p-2"
                     onClick={(e) => {
                         setOpen(true);
                         inputRef.current?.focus();
@@ -72,7 +72,7 @@ const TagInput = ({placeholder, suggestions, value, onChange}: props) => {
                         >
                             {tag}
                             <X
-                                className="w-3 h-3 hover:text-destructive cursor-pointer"
+                                className="h-3 w-3 cursor-pointer hover:text-destructive"
                                 onClick={(e) => {
                                     e.stopPropagation();
                                     removeItem(tag);
@@ -80,31 +80,27 @@ const TagInput = ({placeholder, suggestions, value, onChange}: props) => {
                             />
                         </Badge>
                     ))}
-                    <input 
-                        ref={inputRef}
-                        type="text"
+                    <input
+                        ref={inputRef} 
+                        type="text" 
                         className="flex-1 min-w-24 border-none outline-none bg-transparent"
-                        placeholder={value.length > 0 ? "" : placeholder}
+                        placeholder={value.length > 0? "" : placeholder}
                         value={query}
                         onChange={(e) => {
                             setOpen(true);
                             setQuery(e.target.value);
                         }}
-                        onKeyDown={handleKeyEvent}
+                        onKeyDown={handleKeyEvent}                        
                     />
                 </div>
             </PopoverTrigger>
-            <PopoverContent 
-                className="p-0" 
-                align="start" 
-                onOpenAutoFocus={(e) => e.preventDefault()}
-            >
+            <PopoverContent>
                 <Command>
                     <CommandList>
                         <CommandEmpty>
-                            {query.trim() 
+                            {query.trim()
                                 ? `Press enter to add "${query}"`
-                                : `Start typing to search...`}
+                                : "Start typing to search..."}
                         </CommandEmpty>
                         {filter.map((tag) => (
                             <CommandItem
