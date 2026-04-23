@@ -59,8 +59,8 @@ const TagInput = ({placeholder, suggestions, value, onChange}: props) => {
         <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
                 <div
-                    className="flex flex-wrap items-center w-full min-h-10 bg-muted rounded-md border-2 border-border p-2"
-                    onClick={(e) => {
+                    className="flex flex-wrap gap-1 items-center w-full min-h-10 bg-muted/60 rounded-md border-2 border-border p-2"
+                    onClick={() => {
                         setOpen(true);
                         inputRef.current?.focus();
                     }}
@@ -69,15 +69,17 @@ const TagInput = ({placeholder, suggestions, value, onChange}: props) => {
                         <Badge
                             key={tag}
                             variant={"outline"}
+                            className="flex items-center gap-1"
                         >
                             {tag}
-                            <X
-                                className="h-3 w-3 cursor-pointer hover:text-destructive"
+                            <span
                                 onClick={(e) => {
                                     e.stopPropagation();
                                     removeItem(tag);
                                 }}
-                            />
+                            >
+                                <X className="h-3 w-3 cursor-pointer hover:text-destructive transition-colors duration-200"/>
+                            </span>
                         </Badge>
                     ))}
                     <input
@@ -90,7 +92,7 @@ const TagInput = ({placeholder, suggestions, value, onChange}: props) => {
                             setOpen(true);
                             setQuery(e.target.value);
                         }}
-                        onKeyDown={handleKeyEvent}                        
+                        onKeyDown={handleKeyEvent}
                     />
                 </div>
             </PopoverTrigger>
@@ -109,6 +111,7 @@ const TagInput = ({placeholder, suggestions, value, onChange}: props) => {
                         {filter.map((tag) => (
                             <CommandItem
                                 key={tag}
+                                value={tag}
                                 onSelect={() => addItem(tag)}
                             >
                                 {tag}
