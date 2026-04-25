@@ -40,7 +40,7 @@ const VenueSelection = () => {
             <Controller
                 name="venue.mode"
                 control={form.control}
-                render={({ field, fieldState }) => (
+                render={({field, fieldState}) => (
                     <Field data-invalid={fieldState.invalid}>
                         <FieldLabel>Mode</FieldLabel>
                         <div className="grid grid-cols-3 gap-3">
@@ -51,17 +51,17 @@ const VenueSelection = () => {
                                     onClick={() => {
                                         field.onChange(value);
                                         if(value === "Online") {
-                                            form.setValue("venue.city", "");
-                                            form.setValue("venue.country", "");
-                                            form.setValue("venue.name", "");
-                                            form.setValue("venue.state", "");
+                                            form.setValue("venue.name",     "");
+                                            form.setValue("venue.city",     "");
+                                            form.setValue("venue.state",    "");
+                                            form.setValue("venue.country",  "");
                                         }
                                     }}
                                     className={cn(
-                                        "flex flex-col justify-center items-center w-full p-4 bg-secondary border rounded-lg text-sm text-muted-foreground transition-colors duration-200 cursor-pointer",
+                                        "flex flex-col justify-center items-center w-full p-4 bg-secondary rounded-lg border text-sm text-muted-foreground transition-colors duration-200 cursor-pointer",
                                         field.value === value
                                             ? "border-primary text-primary bg-accent/70"
-                                            : "border-input hover:text-primary hover:bg-accent/70"
+                                            : "border-input hover:bg-accent/70"
                                     )}
                                 >
                                     <Icon className="w-5 h-5"/>
@@ -70,7 +70,6 @@ const VenueSelection = () => {
                                 </button>
                             ))}
                         </div>
-                        {fieldState.invalid && <FieldError errors={[fieldState.error]}/>}
                     </Field>
                 )}
             />

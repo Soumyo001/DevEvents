@@ -13,7 +13,13 @@ const agendaSchema = z.object({
     end_datetime: z.iso.datetime({message: "End date & time of agenda is required"}),
     title: z.string().min(1, {message: "Title of agenda is required"}),
     description: z.string().optional()
-});
+}).refine(
+    (data) => new Date(data.end_datetime) > new Date(data.start_datetime),
+    {
+        message: "End date cannot be less than start date",
+        path: ["end_datetime"]
+    }
+);
 
 const organizerSchema = z.object({
     organizer_name: z.string().min(1, {message: "Organizer name is required"}),
@@ -50,13 +56,13 @@ export const eventSchema = z.object({
         .min(1, {message: "At least one tag is required."}),
     is_published: z.boolean(),
 }).refine(
-    (data)=> new Date(data.end_datetime) < new Date(data.start_datetime),
+    (data)=> new Date(data.end_datetime) > new Date(data.start_datetime),
     {
-        message: "Event end date cannot be less that start date",
+        message: "Event end date cannot be less than start date",
         path: ["end_datetime"]
     },
 ).refine(
-    (data) => new Date(data.registration_deadline) > new Date(data.start_datetime),
+    (data) => new Date(data.registration_deadline) < new Date(data.start_datetime),
     {
         message: "Registration deadline must be before or on the start date",
         path: ["registration_deadline"]
