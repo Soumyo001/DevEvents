@@ -11,7 +11,7 @@ import {
     CommandItem
 } from "./ui/command";
 import { Badge } from "./ui/badge";
-import { useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { X } from "lucide-react";
 
 type props = {
@@ -25,9 +25,11 @@ const TagInput = ({placeholder, suggestions, value, onChange}: props) => {
     const [open, setOpen] = useState<boolean>(false);
     const [query, setQuery] = useState<string>("");
     const inputRef = useRef<HTMLInputElement>(null);
-    const filter = suggestions.filter(
-        (val) => val.toLowerCase().includes(query.toLowerCase())
-            && value.every(selectedVal => selectedVal.toLowerCase() !== val.toLowerCase())
+    const filter = useMemo(
+        () => suggestions.filter(
+            (val) => val.toLowerCase().includes(query.toLowerCase())
+                && value.every(selectedVal => selectedVal.toLowerCase() !== val.toLowerCase())
+        ), [query, value]
     );
 
     const addItem = (item: string) => {
@@ -59,7 +61,7 @@ const TagInput = ({placeholder, suggestions, value, onChange}: props) => {
         <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
                 <div
-                    className="flex flex-wrap gap-1 items-center w-full min-h-10 bg-muted/60 rounded-md border-2 border-border p-2"
+                    className="flex flex-wrap gap-1 items-center w-full min-h-10 bg-muted/60 rounded-md border border-border p-2"
                     onClick={() => {
                         setOpen(true);
                         inputRef.current?.focus();

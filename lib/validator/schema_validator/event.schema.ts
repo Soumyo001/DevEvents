@@ -62,9 +62,9 @@ export const eventSchema = z.object({
         path: ["registration_deadline"]
     }
 ).refine(
-    (data) => data.venue.mode === "Online" ? 
-        true :
-        (data.venue.name.length > 0 && data.venue.city.length > 0 && data.venue.country.length > 0),
+    (data) => data.venue.mode === "Online"
+        ? true
+        : (data.venue.name.length > 0 && data.venue.country.length > 0 && data.venue.city.length > 0),
     {
         message: "Venue details are required for In-Person and Hybrid events",
         path: ["venue"]
