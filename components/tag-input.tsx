@@ -34,7 +34,7 @@ const TagInput = ({placeholder, suggestions, value, onChange}: props) => {
 
     const addItem = (item: string) => {
         const trimmed = item.trim();
-        if(trimmed && value.every(val => val.toLowerCase() !== trimmed.toLowerCase())) {
+        if(trimmed && trimmed.length <= 60 && value.every(val => val.toLowerCase() !== trimmed.toLowerCase())) {
             onChange([...value, trimmed]);
             setOpen(false);
         }

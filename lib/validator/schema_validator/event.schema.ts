@@ -6,7 +6,15 @@ const venueSchema = z.object({
     state: z.string().optional(),
     country: z.string().min(1, {message: "Country name is required"}),
     mode: z.enum(["In-Person","Online","Hybrid"])
-});
+}).refine(
+    (data) => data.mode === "Online"
+        ? true
+        : (data.name.length > 0 && data.country.length > 0 && data.city.length > 0),
+    {
+        message: "Venue details are required for In-Person and Hybrid events",
+        path: ["mode"]
+    }
+);
 
 const agendaSchema = z.object({
     start_datetime: z.iso.datetime({message: "Start date & time of agenda is required"}),
@@ -66,14 +74,6 @@ export const eventSchema = z.object({
     {
         message: "Registration deadline must be before or on the start date",
         path: ["registration_deadline"]
-    }
-).refine(
-    (data) => data.venue.mode === "Online"
-        ? true
-        : (data.venue.name.length > 0 && data.venue.country.length > 0 && data.venue.city.length > 0),
-    {
-        message: "Venue details are required for In-Person and Hybrid events",
-        path: ["venue"]
     }
 );
 

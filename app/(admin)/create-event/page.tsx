@@ -15,7 +15,6 @@ import { cn } from "@/lib/utils"
 import { eventSchema, eventSchemaType } from "@/lib/validator/schema_validator/event.schema"
 import { useForm, FormProvider } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import VenueSection from "@/components/venue-selection"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import {
@@ -29,6 +28,12 @@ import { Field, FieldGroup, FieldLabel, FieldDescription } from "@/components/ui
 import DateTimePicker from "@/components/date-time-picker"
 import TimezonePicker from "@/components/timezone-picker"
 import TagInput from "@/components/tag-input"
+import VenueSection from "@/components/venue-section"
+import OrganizerSection from "@/components/organizer-section"
+import AgendaSection from "@/components/agenda-section"
+import SettingSection from "@/components/settings-section"
+import TitleDescriptionSection from "@/components/title-description-section"
+import { Button } from "@/components/ui/button"
 
 export default function CreateEventPage() {
   const [isPublic, setIsPublic] = useState(true)
@@ -37,30 +42,45 @@ export default function CreateEventPage() {
   const form = useForm<eventSchemaType>({
     resolver: zodResolver(eventSchema),
     defaultValues: {
-      image: undefined,
+      image: "",
       timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
       capacity: null,
       agenda: [],
       audience: [],
       tags: [],
-      venue: { mode: "In-Person" },
+      title: "",
+      description: "",
+      start_datetime: "",
+      end_datetime: "",
+      registration_deadline: "",
+      venue: { 
+        mode: "In-Person", 
+        name: "", 
+        city: "", 
+        state: "", 
+        country: "",
+      },
+      organizer: { organizer_name: "", description: "" },
       is_published: false
     }
   });
 
   const { 
-    register,
     handleSubmit,
     formState: {errors, isSubmitting},
     watch,
     setValue
-   } = form;
+  } = form;
+
+  const onSubmit = (data: eventSchemaType) => {
+
+  }
 
   return (
-    <div className="min-h-screen bg-muted/30">
+    <div className="min-h-screen bg-muted/30 rounded-md">
       <div className="mx-auto max-w-3xl px-4 py-10">
         <FormProvider {...form}>
-          <form id="eventform">
+          <form id="eventform" onSubmit={handleSubmit(onSubmit)}>
             <div className="mb-8 flex flex-row justify-start items-center">
               <div>
                 <h1 className="text-3xl font-semibold tracking-tight">
@@ -73,12 +93,12 @@ export default function CreateEventPage() {
             </div>
             <Card className="mb-6 border-dashed">
               <label 
-              htmlFor="cover"
-              className={cn(
-                "flex h-52 max-sm:h-35 cursor-pointer justify-center items-center bg-linear-to-br from-primary/8 via-muted to-primary/10 transition-colors duration-200 hover:bg-muted/30",
-                cover && "bg-cover bg-center"
-              )}
-              style={cover ? {backgroundImage: `url(${cover})`} : undefined}
+                htmlFor="cover"
+                className={cn(
+                  "flex h-52 max-sm:h-35 cursor-pointer justify-center items-center bg-linear-to-br from-primary/8 via-muted to-primary/10 transition-colors duration-200 hover:bg-muted/30",
+                  cover && "bg-cover bg-center"
+                )}
+                style={cover ? {backgroundImage: `url(${cover})`} : undefined}
               >
                 {!cover && 
                 <div className="flex flex-col justify-center items-center text-muted-foreground">
@@ -105,22 +125,8 @@ export default function CreateEventPage() {
               </CardHeader>
               <CardContent>
                 <FieldGroup>
-                  <Field>
-                    <FieldLabel htmlFor="event_name">Event name</FieldLabel>
-                    <Input
-                      id="event_name"
-                      placeholder="Summer Product Launch"
-                    />
-                  </Field>
-                  <Field>
-                    <FieldLabel htmlFor="description">Description</FieldLabel>
-                    <Textarea
-                      id="description"
-                      placeholder="Tell people what this event is about..."
-                      className="min-h-28 resize-none"
-                    />
-                  </Field>
-                  <Field>
+                  <TitleDescriptionSection/>
+                  <Field data-invalid={errors.tags? true:false}>
                     <FieldLabel>Tags</FieldLabel>
                     <TagInput
                       placeholder="Search or add tags..."
@@ -128,8 +134,12 @@ export default function CreateEventPage() {
                       value={watch("tags")}
                       onChange={(val: string[]) => setValue("tags", val)}
                     />
+                    {errors.tags && 
+                    <p className="text-sm text-destructive">
+                      {errors.tags.message}
+                    </p>}
                   </Field>
-                  <Field>
+                  <Field data-invalid={errors.audience? true:false}>
                     <FieldLabel>Audience</FieldLabel>
                     <TagInput
                       placeholder="Search or add audience..."
@@ -137,6 +147,10 @@ export default function CreateEventPage() {
                       value={watch("audience")}
                       onChange={(val: string[]) => setValue("audience", val)}
                     />
+                    {errors.audience && 
+                    <p className="text-sm text-destructive">
+                      {errors.audience.message}
+                    </p>}
                   </Field>
                 </FieldGroup>
               </CardContent>
@@ -148,15 +162,18 @@ export default function CreateEventPage() {
               </CardHeader>
               <CardContent>
                 <FieldGroup>
-                  <Field>
+                  <Field data-invalid={errors.timezone? true:false}>
                     <FieldLabel>Timezone</FieldLabel>
                     <TimezonePicker
                       value={watch("timezone")}
                       onChange={(val: string) => setValue("timezone", val)}
                     />
+                    {errors.timezone && <p className="text-sm text-destructive">
+                      {errors.timezone.message}
+                    </p>}
                   </Field>
                   <FieldGroup className="flex flex-row justify-between items-center max-sm:flex-col">
-                    <Field>
+                    <Field data-invalid={errors.start_datetime? true:false}>
                       <FieldLabel>Start Date & Time</FieldLabel>
                       <DateTimePicker
                         label="Start Date & Time"
@@ -164,8 +181,11 @@ export default function CreateEventPage() {
                         value={watch("start_datetime")}
                         onChange={(val: string) => setValue("start_datetime", val)}
                       />
+                      {errors.start_datetime && <p className="text-sm text-destructive">
+                        {errors.start_datetime.message}
+                      </p>}
                     </Field>
-                    <Field>
+                    <Field data-invalid={errors.end_datetime? true:false}>
                       <FieldLabel>End Date & Time</FieldLabel>
                       <DateTimePicker
                         label="End Date & Time"
@@ -173,9 +193,12 @@ export default function CreateEventPage() {
                         value={watch("end_datetime")}
                         onChange={(val: string) => setValue("end_datetime", val)}
                       />
+                      {errors.end_datetime && <p className="text-sm text-destructive">
+                        {errors.end_datetime.message}
+                      </p>}
                     </Field>
                   </FieldGroup>
-                  <Field>
+                  <Field data-invalid={errors.registration_deadline? true:false}>
                     <FieldLabel>Registration Deadline</FieldLabel>
                     <DateTimePicker
                       label="Registration Deadline"
@@ -186,6 +209,9 @@ export default function CreateEventPage() {
                     <FieldDescription className="text-xs text-muted-foreground text-left">
                       Users cannot book after this date
                     </FieldDescription>
+                    {errors.registration_deadline && <p className="text-sm text-destructive">
+                      {errors.registration_deadline.message}
+                    </p>}
                   </Field>
                 </FieldGroup>
               </CardContent>
@@ -199,6 +225,45 @@ export default function CreateEventPage() {
                 <VenueSection/>
               </CardContent>
             </Card>
+            <Card className="mb-6">
+              <CardHeader>
+                <CardTitle>Organizer</CardTitle>
+                <CardDescription>Tell something about the organizer</CardDescription>
+              </CardHeader>
+              <CardContent>
+                  <OrganizerSection/>
+              </CardContent>
+            </Card>
+            <Card className="mb-6">
+              <CardHeader>
+                <CardTitle>
+                  Agenda{" "}
+                  <span className="text-muted-foreground text-xs">
+                    optional
+                  </span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <AgendaSection/>
+              </CardContent>
+            </Card>
+            <Card className="mb-6">
+              <CardHeader>
+                <CardTitle>Settings</CardTitle>
+              </CardHeader>
+              <CardContent>
+                  <SettingSection/>
+              </CardContent>
+            </Card>
+            <div className="text-right">
+              <Button
+                type="submit"
+                form="eventform"
+                variant={"outline"}
+              >
+                {form.watch("is_published") ? "Publish event" : "Save event"}
+              </Button>
+            </div>
           </form>
         </FormProvider>
       </div>

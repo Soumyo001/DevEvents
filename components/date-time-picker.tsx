@@ -52,7 +52,7 @@ const DateTimePicker = ({label, timezone, value, onChange}: props) => {
                 <CalendarIcon className="mr-2 h-4 w-4"/>
                 {date && time
                     ?`${format(date, "MMM dd, yyyy")} ${time}`
-                    :`Pick ${label}`}
+                    :`Pick ${label.toLowerCase()}`}
               </Button>
           </PopoverTrigger>
           <PopoverContent className="gap-2" align="start">

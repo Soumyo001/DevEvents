@@ -6,7 +6,6 @@ import { useFormContext, Controller } from "react-hook-form";
 import { cn } from "@/lib/utils";
 import { eventSchemaType } from "@/lib/validator/schema_validator/event.schema";
 import { Input } from "./ui/input";
-import { Button } from "./ui/button";
 
 const MODES = [
     {
@@ -30,7 +29,7 @@ const MODES = [
 ] as const;
 
 
-const VenueSelection = () => {
+const VenueSection = () => {
     const form = useFormContext<eventSchemaType>();
     const mode = form.watch("venue.mode");
     const showVenueData = mode === "In-Person" || mode === "Hybrid";
@@ -70,6 +69,7 @@ const VenueSelection = () => {
                                 </button>
                             ))}
                         </div>
+                        {fieldState.invalid && <FieldError errors={[fieldState.error]}/>}
                     </Field>
                 )}
             />
@@ -156,4 +156,4 @@ const VenueSelection = () => {
     )
 }
 
-export default VenueSelection
+export default VenueSection
