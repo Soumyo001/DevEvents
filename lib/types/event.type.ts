@@ -1,4 +1,4 @@
-export type Venue = {
+export type VenueItem = {
     name: string;
     city: string;
     state?: string;
@@ -6,14 +6,14 @@ export type Venue = {
     mode: "In-Person"|"Online"|"Hybrid";
 }
 
-export type Agenda = {
+export type AgendaItem = {
     start_datetime: string;
     end_datetime: string;
     title: string;
     description?: string;
 }
 
-export type Organizer = {
+export type OrganizerItem = {
     organizer_name: string;
     description?: string;
 }
@@ -29,10 +29,10 @@ export type EventItem = {
     end_datetime: string;
     registration_deadline: string;
     capacity: number|null;
-    venue: Venue;
-    agenda: Agenda[];
+    venue: VenueItem;
+    agenda: AgendaItem[];
     audience: string[];
-    organizer: Organizer;
+    organizer: OrganizerItem;
     tags: string[];
     is_published: boolean;
 }

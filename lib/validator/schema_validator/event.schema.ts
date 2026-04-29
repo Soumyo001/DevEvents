@@ -43,6 +43,7 @@ export const eventSchema = z.object({
         .max(5000, {message: "Too big description"}),
     image: z.string()
         .url({message: "Invalid image URL"})
+        .or(z.literal(""))
         .optional(),
     timezone: z.string()
         .min(1, {message: "Timezone is required"}),

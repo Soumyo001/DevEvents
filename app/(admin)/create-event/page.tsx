@@ -1,22 +1,7 @@
-"use client"
-
-import React, { useState } from "react"
-import { format } from "date-fns"
-import {
-  CalendarIcon,
-  Clock,
-  MapPin,
-  Image as ImageIcon,
-  Users,
-  Globe,
-  Lock,
-} from "lucide-react"
-import { cn } from "@/lib/utils"
+'use client'
 import { eventSchema, eventSchemaType } from "@/lib/validator/schema_validator/event.schema"
 import { useForm, FormProvider } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
 import {
   Card,
   CardContent,
@@ -33,16 +18,29 @@ import OrganizerSection from "@/components/organizer-section"
 import AgendaSection from "@/components/agenda-section"
 import SettingSection from "@/components/settings-section"
 import TitleDescriptionSection from "@/components/title-description-section"
+import ImageUpload from "@/components/image-upload-section"
 import { Button } from "@/components/ui/button"
+import { toast } from "sonner"
+import { useEffect, useState } from "react"
 
 export default function CreateEventPage() {
-  const [isPublic, setIsPublic] = useState(true)
-  const [cover, setCover] = useState<string | null>(null)
+  const [tags, setTags] = useState<string[]>([]);
+  const [audiences, setAudiences] = useState<string[]>([]);
+  useEffect(() => {
+    fetch('/api/taxonomies?type=tag')
+    .then(res => res.json())
+    .then(body => setTags(body));
+    
+    fetch('/api/taxonomies?type=audience')
+    .then(res => res.json())
+    .then(body => setAudiences(body));
+
+  }, []);
 
   const form = useForm<eventSchemaType>({
     resolver: zodResolver(eventSchema),
     defaultValues: {
-      image: "",
+      image: undefined,
       timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
       capacity: null,
       agenda: [],
@@ -67,13 +65,28 @@ export default function CreateEventPage() {
 
   const { 
     handleSubmit,
-    formState: {errors, isSubmitting},
+    formState: {errors},
     watch,
     setValue
   } = form;
 
-  const onSubmit = (data: eventSchemaType) => {
-
+  const onSubmit = async (data: eventSchemaType) => {
+    await toast.promise(
+      fetch("/api/events", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(data)
+      }).then(async res => {
+        const body = await res.json();
+        if(!res.ok) throw new Error(body.message || "Failed to create event");
+        return body.message;
+      }),
+      {
+        loading: `${data.is_published? "Publishing":"Uploading"} event`,
+        success: data => data,
+        error: (err: Error) => err.message
+      }
+    );
   }
 
   return (
@@ -92,31 +105,15 @@ export default function CreateEventPage() {
               </div>
             </div>
             <Card className="mb-6 border-dashed">
-              <label 
-                htmlFor="cover"
-                className={cn(
-                  "flex h-52 max-sm:h-35 cursor-pointer justify-center items-center bg-linear-to-br from-primary/8 via-muted to-primary/10 transition-colors duration-200 hover:bg-muted/30",
-                  cover && "bg-cover bg-center"
-                )}
-                style={cover ? {backgroundImage: `url(${cover})`} : undefined}
-              >
-                {!cover && 
-                <div className="flex flex-col justify-center items-center text-muted-foreground">
-                  <ImageIcon className="mb-2 h-6 w-6"/>
-                  <span className="text-sm font-medium">Upload cover image</span>
-                  <span className="text-xs tracking-tight">PNG or JPG upto 5MB</span>
-                </div>}
-                <input 
-                  id="cover"
-                  type="file"
-                  accept="image/png, image/gif, image/jpeg"
-                  className="hidden"
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                    const file = e.target.files?.[0];
-                    if(file) setCover(URL.createObjectURL(file));
-                  }}
-                />
-              </label>
+              <ImageUpload
+                value={watch("image")}
+                onChange={(val: string) => setValue("image", val)}
+              />
+              <CardDescription>
+                {errors.image && <p className="text-sm text-destructive">
+                  {errors.image.message}
+                </p>}
+              </CardDescription>
             </Card>
             <Card className="mb-6">
               <CardHeader>
@@ -130,7 +127,7 @@ export default function CreateEventPage() {
                     <FieldLabel>Tags</FieldLabel>
                     <TagInput
                       placeholder="Search or add tags..."
-                      suggestions={["Hackathon", "Conference", "Meetup", "Workshop","Webinar", "Bootcamp", "Summit", "Open Source"]}
+                      suggestions={tags}
                       value={watch("tags")}
                       onChange={(val: string[]) => setValue("tags", val)}
                     />
@@ -143,7 +140,7 @@ export default function CreateEventPage() {
                     <FieldLabel>Audience</FieldLabel>
                     <TagInput
                       placeholder="Search or add audience..."
-                      suggestions={["Developers", "DevOps Engineers", "Designers","Data Scientists", "Students", "Tech Leads", "CTOs"]}
+                      suggestions={audiences}
                       value={watch("audience")}
                       onChange={(val: string[]) => setValue("audience", val)}
                     />

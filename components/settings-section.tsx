@@ -1,3 +1,4 @@
+'use client'
 import { useFormContext, Controller } from "react-hook-form";
 import { Switch } from "./ui/switch";
 import { FieldGroup, Field, FieldLabel, FieldError } from "./ui/field";

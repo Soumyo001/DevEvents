@@ -2,6 +2,7 @@ import { auth } from "@clerk/nextjs/server";
 import User from "@/lib/schemas/user.schema";
 import { NextResponse } from "next/server";
 import connect from "@/lib/db";
+import { UserItem } from "@/lib/types/user.type";
 
 export const GET = async () => {
     try {
@@ -29,6 +30,7 @@ export const GET = async () => {
     }
 }
 
+// this function is only used for user account sync to mongoDB
 export const POST = async (request: Request) => {
     try {
         const { userId, isAuthenticated } = await auth();
@@ -49,8 +51,11 @@ export const POST = async (request: Request) => {
         }
         await User.findOneAndUpdate(
             {email},
-            {clerk_id: userId, email},
-            {upsert: true}
+            {
+                $set: {clerk_id: userId},
+                $setOnInsert: {email, role: "user"},
+            },
+            {upsert: true},
         );
         return NextResponse.json(
             {message: "User account synced successfully."}, 

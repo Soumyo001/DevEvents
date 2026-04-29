@@ -57,7 +57,7 @@ const VenueSection = () => {
                                         }
                                     }}
                                     className={cn(
-                                        "flex flex-col justify-center items-center w-full p-4 bg-secondary rounded-lg border text-sm text-muted-foreground transition-colors duration-200 cursor-pointer",
+                                        "flex flex-col justify-center items-center w-full p-4 rounded-lg border text-sm text-muted-foreground transition-colors duration-200 cursor-pointer",
                                         field.value === value
                                             ? "border-primary text-primary bg-accent/70"
                                             : "border-input hover:bg-accent/70"

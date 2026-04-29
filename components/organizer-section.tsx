@@ -1,3 +1,4 @@
+'use client'
 import { useFormContext, Controller } from "react-hook-form";
 import { eventSchemaType } from "@/lib/validator/schema_validator/event.schema";
 import { FieldGroup, Field, FieldLabel, FieldError } from "./ui/field";

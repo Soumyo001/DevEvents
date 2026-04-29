@@ -47,8 +47,9 @@ const TagInput = ({placeholder, suggestions, value, onChange}: props) => {
     }
 
     const handleKeyEvent = (e: React.KeyboardEvent<HTMLInputElement>) => {
-        if(e.key === "Enter" && query.trim()) {
-            addItem(query);
+        if(e.key === "Enter") {
+            e.preventDefault();
+            if(query.trim()) addItem(query);
         }
         else if(e.key === "Backspace" && !query && value.length > 0) {
             removeItem(value[value.length-1]);
