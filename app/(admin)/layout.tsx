@@ -1,12 +1,12 @@
 import React from 'react';
 import NavBar from "@/components/navbar";
-import { AdminNavBarItem } from "@/lib/data/constants";
+import { ADMINNAVBARITEM } from "@/lib/data/constants";
 
 const Layout = ({children}: {children: React.ReactNode}) => {
   return (
     <div className='w-full flex flex-col'>
       <NavBar
-        items={AdminNavBarItem}
+        items={ADMINNAVBARITEM}
       />
       <div
           className='container mx-auto mt-20 sm:px-10 px-5 py-10'

@@ -2,6 +2,7 @@
 import { eventSchema, eventSchemaType } from "@/lib/validator/schema_validator/event.schema"
 import { useForm, FormProvider } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { DEFAULTEVENTVALUES } from "@/lib/data/constants"
 import {
   Card,
   CardContent,
@@ -39,28 +40,7 @@ export default function CreateEventPage() {
 
   const form = useForm<eventSchemaType>({
     resolver: zodResolver(eventSchema),
-    defaultValues: {
-      image: undefined,
-      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-      capacity: null,
-      agenda: [],
-      audience: [],
-      tags: [],
-      title: "",
-      description: "",
-      start_datetime: "",
-      end_datetime: "",
-      registration_deadline: "",
-      venue: { 
-        mode: "In-Person", 
-        name: "", 
-        city: "", 
-        state: "", 
-        country: "",
-      },
-      organizer: { organizer_name: "", description: "" },
-      is_published: false
-    }
+    defaultValues: DEFAULTEVENTVALUES,
   });
 
   const { 
@@ -79,6 +59,7 @@ export default function CreateEventPage() {
       }).then(async res => {
         const body = await res.json();
         if(!res.ok) throw new Error(body.message || "Failed to create event");
+        form.reset(DEFAULTEVENTVALUES);
         return body.message;
       }),
       {
