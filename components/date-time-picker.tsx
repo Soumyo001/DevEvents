@@ -31,8 +31,9 @@ const DateTimePicker = ({label, timezone, value, onChange}: props) => {
     }
 
     const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setTime(e.target.value);
-        if(date) commit(date, time);
+        const newTime = e.target.value;
+        setTime(newTime);
+        if(date) commit(date, newTime);
     }
 
     const commit = (dateStr: Date, timeStr: string) => {

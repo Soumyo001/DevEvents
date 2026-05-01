@@ -1,8 +1,20 @@
-'use client';
+'use client'
 import EventCard from '@/components/event-card';
 import ExploreButton from '@/components/explore-button';
+import { EventItem } from '@/lib/types/event.type';
+import { useEffect, useState } from 'react';
 
 const page = () => {
+  const [loading, setLoading] = useState<boolean>(false);
+  const [events, setEvents] = useState<EventItem[]>([]);
+
+  useEffect(() => {
+    fetch('/api/events')
+      .then(res => res.json())
+      .then(body => setEvents(body.events));
+  }, []);
+
+
   return (
     <div
       className='flex flex-col justify-start items-center w-full'
@@ -22,10 +34,19 @@ const page = () => {
         className='flex flex-col justify-start items-start gap-4 w-full mt-12'
       >
         <h3
-          className='text-primary font-bold text-2xl max-sm:text-[18px]'
+          className='text-primary font-bold text-2xl max-sm:text-[18px] max-sm:p-4'
         >
           Featured Events
         </h3>
+        <div className="grid grid-cols-3 gap-5 max-md:grid-cols-1 max-md:w-full max-sm:p-4">
+          {events.map((data: EventItem, index) => 
+            <EventCard
+              key={index}
+              event={data}
+              fav={false}  
+            />
+          )}
+        </div>
       </div>
     </div>
   )

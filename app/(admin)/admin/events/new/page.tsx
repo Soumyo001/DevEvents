@@ -23,10 +23,12 @@ import ImageUpload from "@/components/image-upload-section"
 import { Button } from "@/components/ui/button"
 import { toast } from "sonner"
 import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
 
 export default function CreateEventPage() {
   const [tags, setTags] = useState<string[]>([]);
   const [audiences, setAudiences] = useState<string[]>([]);
+  const router = useRouter();
   useEffect(() => {
     fetch('/api/taxonomies?type=tag')
     .then(res => res.json())
@@ -59,7 +61,11 @@ export default function CreateEventPage() {
       }).then(async res => {
         const body = await res.json();
         if(!res.ok) throw new Error(body.message || "Failed to create event");
-        form.reset(DEFAULTEVENTVALUES);
+        if(data.is_published) {
+          router.push(`/events/${body.event.slug}`);
+        } else {
+          form.reset(DEFAULTEVENTVALUES);
+        }
         return body.message;
       }),
       {

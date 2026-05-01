@@ -3,15 +3,15 @@ import { eventSchemaType } from "../validator/schema_validator/event.schema";
 export const ADMINNAVBARITEM = [
     {
         name: "Home",
-        url: "/home"
+        url: "/admin/home"
     },
     {
         name: "Events",
-        url: "/Events"
+        url: "/admin/events"
     },
     {
         name: "Create Event",
-        url: "/create-event"
+        url: "/admin/events/new"
     },
 ];
 

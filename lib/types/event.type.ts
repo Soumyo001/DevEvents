@@ -1,8 +1,8 @@
 export type VenueItem = {
-    name: string;
-    city: string;
+    name?: string;
+    city?: string;
     state?: string;
-    country: string,
+    country?: string,
     mode: "In-Person"|"Online"|"Hybrid";
 }
 

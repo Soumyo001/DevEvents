@@ -17,7 +17,7 @@ export const GET = async () => {
             );
         }
         await connect();
-        const events = await Event.find({is_publised: true})
+        const events = await Event.find({is_published: true})
                                 .sort({start_datetime: 1})
                                 .lean<EventItem[]>();
         return NextResponse.json(
@@ -57,7 +57,7 @@ export const POST = async (req: Request) => {
             .toLowerCase()
             .replace(/\s+/g, "-")
             .replace(/[^a-z0-9-]/g, "");
-        const existingEvent = await Event.findOne({slug});
+        const existingEvent = await Event.findOne({slug}).lean<EventItem>();
         if(existingEvent) {
             return NextResponse.json(
                 {message: "Conflict. An event with same title already exists"}, {status: 409}

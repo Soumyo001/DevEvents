@@ -21,6 +21,7 @@ import { signInSchema, signInSchemaType } from "@/lib/validator/schema_validator
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { UserItem } from "@/lib/types";
 
 const page = () => {
   const [authError, setAuthError] = useState<string|null>(null);
@@ -64,8 +65,13 @@ const page = () => {
               error: (err: Error) => err.message ?? "Failed to sync account. You can retry sync on your next login"
             }
           );
+        } else if(res.ok) {
+          const body = await res.json();
+          const user: UserItem = body.user;
+          if(user.role === "admin") router.push("/admin/home");
+          else router.push("/home");
         }
-        router.push("/home");
+        
       } else {
         setAuthError("Authentication failed. Please try again.");
       }

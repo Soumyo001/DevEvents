@@ -1,18 +1,28 @@
 import { z } from "zod";
 
 const venueSchema = z.object({
-    name: z.string().min(1, {message: "Venue name is required"}),
-    city: z.string().min(1, {message: "City name is required"}),
+    name: z.string().optional(),
+    city: z.string().optional(),
     state: z.string().optional(),
-    country: z.string().min(1, {message: "Country name is required"}),
+    country: z.string().optional(),
     mode: z.enum(["In-Person","Online","Hybrid"])
 }).refine(
-    (data) => data.mode === "Online"
-        ? true
-        : (data.name.length > 0 && data.country.length > 0 && data.city.length > 0),
+    (data) => data.mode === "Online" || !!data.name,
     {
-        message: "Venue details are required for In-Person and Hybrid events",
-        path: ["mode"]
+        message: "Venue name is required",
+        path: ["name"]
+    }
+).refine(
+    (data) => data.mode === "Online" || !!data.city,
+    {
+        message: "City is required",
+        path: ["city"]
+    }
+).refine(
+    (data) => data.mode === "Online" || !!data.country,
+    {
+        message: "Country is required",
+        path: ["country"]
     }
 );
 

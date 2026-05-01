@@ -2,10 +2,10 @@ import { Schema, models, model } from "mongoose";
 
 const VenueSchema = new Schema(
   {
-    name: {type: String, required: true},
-    city: {type: String, required: true},
+    name: {type: String},
+    city: {type: String},
     state: {type: String},
-    country: {type: String, required: true},
+    country: {type: String},
     mode: {
       type: String,
       enum: ["In-Person","Online","Hybrid"],

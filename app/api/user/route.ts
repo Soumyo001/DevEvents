@@ -11,7 +11,7 @@ export const GET = async () => {
             return NextResponse.json({message: "User not logged in."}, {status: 401});
         }
         await connect();
-        const user = await User.findOne({clerk_id: userId});
+        const user = await User.findOne({clerk_id: userId}).lean<UserItem>();
         if(!user) {
             return NextResponse.json(
                 {message: "User not found. Please create your account"},
@@ -19,7 +19,7 @@ export const GET = async () => {
             );
         } 
         return NextResponse.json(
-            {message: "User sign in successful"},
+            {message: "User sign in successful", user},
             {status: 200}
         );
     } catch (err: any) {
@@ -42,7 +42,7 @@ export const POST = async (request: Request) => {
         }
         await connect();
         const { email } = await request.json();
-        const existingUser = await User.findOne({email});
+        const existingUser = await User.findOne({email}).lean<UserItem>();
         if(existingUser?.clerk_id === userId) {
             return NextResponse.json(
                 {message: "User already exists."},
