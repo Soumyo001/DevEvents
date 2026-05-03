@@ -15,10 +15,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { signUpSchema, signUpSchemaType } from "@/lib/validator/schema_validator/sign-up.schema";
 import { useSignUp } from "@clerk/nextjs/legacy";
+import { useSession } from "@clerk/nextjs";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
@@ -30,7 +30,8 @@ const page = () => {
   const [verificationError, setVerificationError] = useState<string|null>(null);
   const [code, setCode] = useState<string>("");
   const { signUp, isLoaded, setActive } = useSignUp();
-  const router = useRouter();
+  const { session } = useSession();
+
   const {
     register,
     handleSubmit,
@@ -80,7 +81,7 @@ const page = () => {
             error: (err: Error) => err.message ?? "Failed to sync account. You can retry sync on your next login"
           }
         );
-        router.push("/home");
+        
       } else {
         setVerificationError("Verification failed. Please try again");
       }

@@ -68,6 +68,30 @@ const SettingSection = () => {
                     </Field>
                 )}
             />
+            <Controller
+                control={form.control}
+                name="is_featured"
+                render={({field, fieldState}) => (
+                    <Field
+                        orientation={"horizontal"}
+                        data-invalid={fieldState.invalid}
+                        className="border p-4 rounded-lg"
+                    >
+                        <div className="flex-1">
+                            <FieldLabel htmlFor="feature-event">Feature this event</FieldLabel>
+                            <span className="text-xs text-muted-foreground block mt-1">
+                                Featured events appear on the homepage
+                            </span>
+                        </div>
+                        <Switch
+                            id="feature-event"
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                        />
+                        {fieldState.invalid && <FieldError errors={[fieldState.error]}/>}
+                    </Field>
+                )}
+            />
       </FieldGroup>
     )
 }

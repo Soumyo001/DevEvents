@@ -63,9 +63,8 @@ export default function CreateEventPage() {
         if(!res.ok) throw new Error(body.message || "Failed to create event");
         if(data.is_published) {
           router.push(`/events/${body.event.slug}`);
-        } else {
-          form.reset(DEFAULTEVENTVALUES);
         }
+        form.reset(DEFAULTEVENTVALUES);
         return body.message;
       }),
       {

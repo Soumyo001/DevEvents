@@ -48,12 +48,16 @@ const EventSchema = new Schema(
     audience: {type: [String], default: []},
     tags: {type: [String], default: []},
     is_published: {type: Boolean, default: false},
+    is_featured: {type: Boolean, default: false},
   },
   {
     timestamps: true,
     collection: "events",
   },
 );
+
+EventSchema.index({is_published: 1, is_featured: 1});
+EventSchema.index({start_datetime: 1});
 
 const Event = models.Event || model("Event", EventSchema);
 export default Event;

@@ -3,15 +3,33 @@ import EventCard from '@/components/event-card';
 import ExploreButton from '@/components/explore-button';
 import { EventItem } from '@/lib/types/event.type';
 import { useEffect, useState } from 'react';
+import { Loader2 } from 'lucide-react';
+import { toast } from 'sonner';
 
 const page = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [events, setEvents] = useState<EventItem[]>([]);
+  const [favEvents, setFavEvents] = useState<string[]>([]);
 
   useEffect(() => {
-    fetch('/api/events')
-      .then(res => res.json())
-      .then(body => setEvents(body.events));
+    const fetchEvents = async () => {
+      setLoading(true);
+      try {
+        const [eventRes, favRes] = await Promise.all([
+          fetch('/api/events/featured'),
+          fetch('/api/events/favourites')
+        ]);
+        const eventBody = await eventRes.json();
+        const favBody = await favRes.json();
+        setEvents(eventBody.events);
+        setFavEvents(favBody.events.map((item: EventItem) => item._id));
+      } catch (err: any) { 
+        toast.error(`Unknow error occured: ${err.message}`)
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchEvents();
   }, []);
 
 
@@ -38,14 +56,18 @@ const page = () => {
         >
           Featured Events
         </h3>
-        <div className="grid grid-cols-3 gap-5 max-md:grid-cols-1 max-md:w-full max-sm:p-4">
-          {events.map((data: EventItem, index) => 
+        <div className="relative grid grid-cols-3 gap-5 min-h-75 w-full max-md:grid-cols-1 max-md:w-full max-sm:p-4">
+          {loading? (
+            <div className='absolute inset-0 bg-background/70 flex justify-center items-center'>
+              <Loader2 className='w-6 h-6 animate-spin text-muted-foreground'/>  
+            </div>
+          ):(events.map((data: EventItem) => 
             <EventCard
-              key={index}
+              key={data.slug}
               event={data}
-              fav={false}  
+              fav={favEvents.includes(data._id)}  
             />
-          )}
+          ))}
         </div>
       </div>
     </div>

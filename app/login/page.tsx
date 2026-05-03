@@ -65,11 +65,6 @@ const page = () => {
               error: (err: Error) => err.message ?? "Failed to sync account. You can retry sync on your next login"
             }
           );
-        } else if(res.ok) {
-          const body = await res.json();
-          const user: UserItem = body.user;
-          if(user.role === "admin") router.push("/admin/home");
-          else router.push("/home");
         }
         
       } else {

@@ -74,6 +74,7 @@ export const eventSchema = z.object({
     tags: z.array(z.string())
         .min(1, {message: "At least one tag is required."}),
     is_published: z.boolean(),
+    is_featured: z.boolean(),
 }).refine(
     (data)=> new Date(data.end_datetime) > new Date(data.start_datetime),
     {

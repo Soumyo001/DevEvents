@@ -3,14 +3,14 @@ import { NavItem } from '@/lib/types';
 import Image from 'next/image';
 import { UserButton } from '@clerk/nextjs';
 
-const NavBar = ({items = []}: {items: NavItem[]}) => {
+const NavBar = ({items}: {items: NavItem[]}) => {
     return (
       <header className="fixed top-0 w-full bg-[#12121280]/50 backdrop-blur-md border-b border-primary-foreground/10">
           <nav
               className='flex flex-row justify-between items-center max-sm:px-5 px-10 py-4 gap-4'
           >
               <Link
-                  href="/home"
+                  href={items.find(item => item.id === "home")?.url || "/"}
                   className='flex flex-row items-center gap-2'
               >
                   <Image

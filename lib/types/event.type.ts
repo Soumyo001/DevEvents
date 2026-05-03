@@ -35,4 +35,5 @@ export type EventItem = {
     organizer: OrganizerItem;
     tags: string[];
     is_published: boolean;
+    is_featured: boolean;
 }

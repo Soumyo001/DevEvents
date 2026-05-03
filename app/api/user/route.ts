@@ -1,4 +1,4 @@
-import { auth } from "@clerk/nextjs/server";
+import { auth, clerkClient } from "@clerk/nextjs/server";
 import User from "@/lib/schemas/user.schema";
 import { NextResponse } from "next/server";
 import connect from "@/lib/db";
@@ -49,14 +49,20 @@ export const POST = async (request: Request) => {
                 {status: 409}
             );
         }
-        await User.findOneAndUpdate(
+        const user = await User.findOneAndUpdate(
             {email},
             {
                 $set: {clerk_id: userId},
                 $setOnInsert: {email, role: "user"},
             },
-            {upsert: true},
-        );
+            {upsert: true, returnDocument: "after"},
+        ).lean<UserItem>();
+        
+        const client = await clerkClient();
+        await client.users.updateUser(userId, {
+            publicMetadata: { role: user?.role ?? "user" }
+        });
+
         return NextResponse.json(
             {message: "User account synced successfully."}, 
             {status: 200}
