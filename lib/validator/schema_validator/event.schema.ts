@@ -51,6 +51,9 @@ export const eventSchema = z.object({
     description: z.string()
         .min(10, {message: "Description must be at least 10 characters"})
         .max(5000, {message: "Too big description"}),
+    overview: z.string()
+        .min(50, {message: "An overview must have at least 50 characters"})
+        .max(6000, {message: "Overview too big"}),
     image: z.string()
         .url({message: "Invalid image URL"})
         .or(z.literal(""))

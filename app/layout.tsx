@@ -54,7 +54,7 @@ export default function RootLayout({
               followMouse={true}
               mouseInfluence={0.02}
               noiseAmount={0}
-              distortion={0.01}
+              distortion={0.05}
               className="custom-rays pointer-events-none"
               pulsating={false}
               fadeDistance={1}

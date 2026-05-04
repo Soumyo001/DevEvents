@@ -22,6 +22,7 @@ export type EventItem = {
     _id: string;
     title: string;
     description: string;
+    overview: string;
     slug: string;
     image?: string;
     timezone: string;

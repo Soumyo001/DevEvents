@@ -44,6 +44,23 @@ const TitleDescriptionSection = () => {
                     </Field>
                 )}
             />
+            <Controller
+                control={form.control}
+                name="overview"
+                render={({field, fieldState}) => (
+                    <Field data-invalid={fieldState.invalid}>
+                        <FieldLabel htmlFor="overview">Overview</FieldLabel>
+                        <Textarea
+                            {...field}
+                            id="overview"
+                            placeholder="Github Universe 2025 is back, bringing together..."
+                            aria-invalid={fieldState.invalid}
+                            className="min-h-28 resize-none"
+                        />
+                        {fieldState.error && <FieldError errors={[fieldState.error]}/>}
+                    </Field>
+                )}
+            />
         </FieldGroup>
     )
 }

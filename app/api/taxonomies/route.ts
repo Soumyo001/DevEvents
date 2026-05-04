@@ -32,7 +32,7 @@ export const GET = async (req: Request) => {
         const taxonomies = await Taxonomy.find({type})
                         .sort({usageCount: -1})
                         .select("value -_id")
-                        .lean();
+                        .lean<TaxonomyItem[]>();
         
         return NextResponse.json(taxonomies.map(item => item.value), {status: 200});
     } catch (err: any) {

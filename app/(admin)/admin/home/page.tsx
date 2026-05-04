@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import { Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 
-const page = () => {
+const Page = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [events, setEvents] = useState<EventItem[]>([]);
   const [favEvents, setFavEvents] = useState<string[]>([]);
@@ -61,7 +61,7 @@ const page = () => {
             <div className='absolute inset-0 bg-background/70 flex justify-center items-center'>
               <Loader2 className='w-6 h-6 animate-spin text-muted-foreground'/>  
             </div>
-          ):(events.map((data: EventItem) => 
+          ):(events.map((data) => 
             <EventCard
               key={data.slug}
               event={data}
@@ -74,4 +74,4 @@ const page = () => {
   )
 }
 
-export default page;
+export default Page;

@@ -34,7 +34,7 @@ const EventCard = ({event, fav}: {event: EventItem, fav: boolean}) => {
             <div className="relative w-full h-48 rounded-t-xl overflow-hidden">
                 <Button
                     type="button"
-                    className="absolute top-2 right-2 z-10 rounded-full p-2 opacity-0 group-hover:opacity-100 max-sm:opacity-100 bg-secondary/30 text-white hover:bg-secondary/80 transition-colors duration-200"
+                    className="absolute top-2 right-2 z-10 rounded-full p-2 opacity-0 group-hover:opacity-100 max-sm:opacity-100 bg-secondary/30 hover:bg-secondary/80 transition-colors duration-200"
                     onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
@@ -43,11 +43,11 @@ const EventCard = ({event, fav}: {event: EventItem, fav: boolean}) => {
                         debouncedSave(event._id, newIsFav);
                     }}
                 >
-                    <Heart className="w-2 h-2" fill={isFav?"red":"none"}/>
+                    <Heart className="w-2 h-2 text-white" fill={isFav?"red":"none"}/>
                 </Button>
                 {event.image?(
                     <Image
-                        src={event.image||""}
+                        src={event.image}
                         alt={event.title}
                         fill
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"

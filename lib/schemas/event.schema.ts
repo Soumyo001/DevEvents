@@ -35,6 +35,7 @@ const EventSchema = new Schema(
   {
     title: {type: String, required: true},
     description: {type: String, required: true},
+    overview: {type: String, required: true},
     slug: {type: String, required: true, unique: true, lowercase: true, trim: true},
     image: {type: String},
     timezone: {type: String, default: "America/Los_Angeles"},
