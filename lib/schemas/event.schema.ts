@@ -57,6 +57,7 @@ const EventSchema = new Schema(
   },
 );
 
+EventSchema.index({slug: 1});
 EventSchema.index({is_published: 1, is_featured: 1});
 EventSchema.index({start_datetime: 1});
 

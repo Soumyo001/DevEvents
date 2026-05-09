@@ -49,7 +49,10 @@ export const POST = async (req: Request) => {
         const parsed = eventSchema.safeParse(body);
         if(!parsed.success) {
             return NextResponse.json(
-                {message: "Invalid request"}, {status: 400}
+                {
+                    message: "Invalid request data", 
+                    errors: parsed.error.flatten().fieldErrors
+                }, {status: 400}
             );
         }
         const data = parsed.data;

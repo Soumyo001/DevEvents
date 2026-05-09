@@ -3,15 +3,15 @@ import Link from "next/link";
 import Image from "next/image";
 import { Button } from "./ui/button";
 import { EventItem } from "@/lib/types/event.type";
-import {MapPin, CalendarDays, Clock, Heart, ImageIcon} from "lucide-react";
+import {MapPin, CalendarDays, Clock, Heart, ImageIcon, Globe} from "lucide-react";
 import { useState } from "react";
 import { formatDate } from "@/lib/helpers/formatter";
 import { format } from "date-fns";
 import { useDebouncedCallback } from "use-debounce";
 import { toast } from "sonner";
 
-const EventCard = ({event, fav}: {event: EventItem, fav: boolean}) => {
-    const [isFav, setIsFav] = useState<boolean>(fav);
+const EventCard = ({event, fav}: {event: EventItem, fav?: boolean}) => {
+    const [isFav, setIsFav] = useState<boolean|undefined>(fav);
     const debouncedSave = useDebouncedCallback(async(event_id: string, isFav: boolean) => {
         try {
             const res = await fetch("/api/events/favourites", {
@@ -34,7 +34,7 @@ const EventCard = ({event, fav}: {event: EventItem, fav: boolean}) => {
             <div className="relative w-full h-48 rounded-t-xl overflow-hidden">
                 <Button
                     type="button"
-                    className="absolute top-2 right-2 z-10 rounded-full p-2 opacity-0 group-hover:opacity-100 max-sm:opacity-100 bg-secondary/30 hover:bg-secondary/80 transition-colors duration-200"
+                    className="absolute top-2 right-2 z-10 rounded-full p-2 opacity-0 group-hover:opacity-100 max-md:opacity-100 bg-secondary/30 hover:bg-secondary/80 transition-colors duration-200"
                     onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
@@ -43,7 +43,7 @@ const EventCard = ({event, fav}: {event: EventItem, fav: boolean}) => {
                         debouncedSave(event._id, newIsFav);
                     }}
                 >
-                    <Heart className="w-2 h-2 text-white" fill={isFav?"red":"none"}/>
+                    <Heart className="w-4 h-4 text-white" fill={isFav?"red":"none"}/>
                 </Button>
                 {event.image?(
                     <Image
@@ -60,13 +60,21 @@ const EventCard = ({event, fav}: {event: EventItem, fav: boolean}) => {
                 )}
             </div>
             <div className="flex flex-col justify-start items-start gap-2 w-full">
-                {event.venue && event.venue.mode !== "Online" && 
-                <p className="flex flex-row items-center gap-1 text-xs max-sm:text-[10px] text-left text-muted-foreground font-semibold">
-                    <MapPin className="w-3.5 h-3.5"/>
-                    <span>
-                        {`${event.venue.city}, ${event.venue.state ? `${event.venue.state}, `:""} ${event.venue.country}`}
-                    </span>
-                </p>}
+                <p className="flex flex-row justify-start items-center gap-1 text-xs max-sm:text-[10px] text-left text-muted-foreground font-semibold">
+                    {event.venue && event.venue.mode !== "Online" ? (
+                        <>
+                            <MapPin className="w-3.5 h-3.5"/>
+                            <span>
+                                {`${event.venue.city}, ${event.venue.state ? `${event.venue.state}, `:""}${event.venue.country}`}
+                            </span>
+                        </>
+                    ):(
+                        <>
+                            <Globe className="w-3.5 h-3.5"/>
+                            <span>Virtual event</span>
+                        </>
+                    )}
+                </p>
                 <h2 className="text-lg max-sm:text-sm text-left text-primary font-bold">
                     {event.title.trim()}
                 </h2>

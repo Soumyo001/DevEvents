@@ -3,12 +3,47 @@ import { useState } from 'react'
 import Image from 'next/image'
 import { ImageIcon } from 'lucide-react'
 import { Card, CardHeader, CardContent, CardTitle } from './ui/card';
-import { Field, FieldLabel, FieldGroup, FieldDescription } from './ui/field';
+import { Field, FieldLabel, FieldGroup } from './ui/field';
 import { Input } from './ui/input';
 import { Button } from './ui/button';
+import { toast } from 'sonner';
 
-const DisplayBookingSection = ({image, title}: {image: string|undefined, title: string|undefined}) => {
+const DisplayBookingSection = ({image, title, event_id}: {
+                                    image: string|undefined, 
+                                    title: string|undefined, 
+                                    event_id: string|undefined
+                                }) => {
     const [email, setEmail] = useState<string>("");
+    const [booking, setBooking] = useState<boolean>(false);
+    const handleClick = async () => {
+        if(booking) return;
+        setBooking(true);
+        try {
+            await toast.promise(
+                fetch('/api/events/booking', {
+                    method: "POST",
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify({event_id, email})
+                }).then(async res => {
+                    const body = await res.json();
+                    if(!res.ok) {
+                        const errorMsg = body.errors 
+                                    ? Object.values(body.errors).flat().join(", ")
+                                    : body.message;
+                        throw new Error(errorMsg);
+                    }
+                    return body.message;
+                }),
+                {
+                    loading: "Booking your event...",
+                    success: data => data,
+                    error: (err: Error) => err.message ?? "Unknown error occured"
+                }
+            );
+        } finally {
+            setBooking(false);
+        }
+    }
     return (
         <div className='flex flex-row max-md:flex-col gap-7 w-full mb-7'>
             <div className='relative w-3/5 max-md:w-full min-h-75 aspect-auto max-md:aspect-video ovreflow-hidden'>
@@ -26,8 +61,8 @@ const DisplayBookingSection = ({image, title}: {image: string|undefined, title: 
                     </div>
                 )}
             </div>
-            <div className='flex flex-col justify-start items-center w-2/5 max-md:w-full'>
-                <Card className='max-w-md w-full max-md:max-w-full bg-background/40 gap-7 rounded-sm'>
+            <div className='flex flex-col justify-start items-end w-2/5 max-md:w-full'>
+                <Card className='max-w-md w-full max-md:max-w-full max-md:rounded-xs bg-background/40 gap-7 rounded-sm'>
                     <CardHeader>
                         <CardTitle className='text-2xl text-left font-bold'>
                             Book your spot
@@ -42,16 +77,20 @@ const DisplayBookingSection = ({image, title}: {image: string|undefined, title: 
                                     id='booking-email'
                                     placeholder='enter your email address'
                                     onChange={(e) => setEmail(e.target.value)}
-                                    className='py-6 rounded-sm'
+                                    className='py-6 rounded-sm outline-none border-none'
                                 />
                             </Field>
+                            <Field>
                                 <Button
                                     type='button'
                                     variant={'outline'}
                                     className='py-5 rounded-sm'
+                                    disabled={booking}
+                                    onClick={handleClick}
                                 >
-                                    Submit
+                                    {booking? "Booking...":"Submit"}
                                 </Button>
+                            </Field>
                         </FieldGroup>
                     </CardContent>
                 </Card>

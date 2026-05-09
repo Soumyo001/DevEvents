@@ -3,7 +3,7 @@ import EventCard from '@/components/event-card';
 import ExploreButton from '@/components/explore-button';
 import { EventItem } from '@/lib/types/event.type';
 import { useEffect, useState } from 'react';
-import { Loader2 } from 'lucide-react';
+import Loader from '@/components/loader';
 import { toast } from 'sonner';
 
 const Page = () => {
@@ -56,10 +56,10 @@ const Page = () => {
         >
           Featured Events
         </h3>
-        <div className="relative grid grid-cols-3 gap-5 min-h-75 w-full max-md:grid-cols-1 max-md:w-full max-sm:p-4">
+        <div className="relative grid grid-cols-3 gap-5 min-h-75 w-full max-md:grid-cols-1 max-sm:p-4">
           {loading? (
             <div className='absolute inset-0 bg-background/70 flex justify-center items-center'>
-              <Loader2 className='w-6 h-6 animate-spin text-muted-foreground'/>  
+              <Loader/>  
             </div>
           ):(events.map((data) => 
             <EventCard

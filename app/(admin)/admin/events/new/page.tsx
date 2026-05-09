@@ -30,14 +30,19 @@ export default function CreateEventPage() {
   const [audiences, setAudiences] = useState<string[]>([]);
   const router = useRouter();
   useEffect(() => {
-    fetch('/api/taxonomies?type=tag')
-    .then(res => res.json())
-    .then(body => setTags(body));
-    
-    fetch('/api/taxonomies?type=audience')
-    .then(res => res.json())
-    .then(body => setAudiences(body));
+    const fetchTaxonomies = async () => {
+      const [tagRes, audienceRes] = await Promise.all([
+        fetch('/api/taxonomies?type=tag'),
+        fetch('/api/taxonomies?type=audience')
+      ]);
 
+      const tagBody = await tagRes.json();
+      const audienceBody = await audienceRes.json();
+
+      setTags(tagBody);
+      setAudiences(audienceBody);
+    }
+    fetchTaxonomies();
   }, []);
 
   const form = useForm<eventSchemaType>({
@@ -60,9 +65,14 @@ export default function CreateEventPage() {
         body: JSON.stringify(data)
       }).then(async res => {
         const body = await res.json();
-        if(!res.ok) throw new Error(body.message || "Failed to create event");
+        if(!res.ok) {
+          const errorMsg = body.errors
+                              ? Object.values(body.errors).flat().join(", ")
+                              : body.message;
+          throw new Error(errorMsg);
+        };
         if(data.is_published) {
-          router.push(`/events/${body.event.slug}`);
+          router.push(`/admin/events/${body.event.slug}`);
         }
         form.reset(DEFAULTEVENTVALUES);
         return body.message;

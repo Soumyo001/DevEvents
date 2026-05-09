@@ -33,8 +33,14 @@ export const GET = async(req: Request, {params}: {params: Promise<{slug: string}
                 {status: 404}
             );
         }
+        const similar_events = await Event.find({
+            _id: {$ne: event._id},
+            tags: {$in: event.tags},
+            is_published: true,
+            start_datetime: {$gte: new Date()}
+        }).sort({start_datetime: 1}).limit(6).lean<EventItem[]>();
         return NextResponse.json(
-            {message: "Event fetched successfully", event}, {status: 200}
+            {message: "Event fetched successfully", event, similar_events}, {status: 200}
         );
     } catch (err: any) {
         return NextResponse.json(

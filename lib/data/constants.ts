@@ -51,6 +51,7 @@ export const DEFAULTEVENTVALUES: eventSchemaType = {
     tags: [],
     title: "",
     description: "",
+    overview: "",
     start_datetime: "",
     end_datetime: "",
     registration_deadline: "",
