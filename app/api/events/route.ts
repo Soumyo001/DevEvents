@@ -68,7 +68,7 @@ export const POST = async (req: Request) => {
         }
         await SyncTaxonomies(data.tags, "tag");
         await SyncTaxonomies(data.audience, "audience");
-        const event = await Event.create({...data, slug});
+        const event = await Event.create({...data, slug, bookingCount: 0});
         return NextResponse.json(
             {
                 message: `Event ${data.is_published? "published":"created"} successfully`,

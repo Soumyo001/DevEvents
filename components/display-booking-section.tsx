@@ -19,6 +19,7 @@ const DisplayBookingSection = ({image, title, event_id}: {
         if(booking) return;
         setBooking(true);
         try {
+            if(!event_id) throw new Error("Event ID missing. might be an invalid event");
             await toast.promise(
                 fetch('/api/events/booking', {
                     method: "POST",
@@ -27,6 +28,7 @@ const DisplayBookingSection = ({image, title, event_id}: {
                 }).then(async res => {
                     const body = await res.json();
                     if(!res.ok) {
+                        if(body.errors) console.log(body.errors)
                         const errorMsg = body.errors 
                                     ? Object.values(body.errors).flat().join(", ")
                                     : body.message;
@@ -40,6 +42,8 @@ const DisplayBookingSection = ({image, title, event_id}: {
                     error: (err: Error) => err.message ?? "Unknown error occured"
                 }
             );
+        } catch(err: any) {
+            toast.error(err.message);
         } finally {
             setBooking(false);
         }

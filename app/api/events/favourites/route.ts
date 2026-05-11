@@ -31,9 +31,10 @@ export const GET = async () => {
             );
         }
         const eventIDs = favourites.map(item => item.event_id);
-        const filter: any = {_id: {$in: eventIDs}}
-        filter.is_published = true;
-        const events = await Event.find(filter).lean<EventItem[]>();
+        const events = await Event.find({
+            _id: {$in: eventIDs},
+            is_published: true
+        }).lean<EventItem[]>();
         return NextResponse.json(
             {message: "Favourite events found", events}, {status: 200}
         );

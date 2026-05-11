@@ -43,6 +43,7 @@ const EventSchema = new Schema(
     end_datetime: {type: Date, required: true},
     registration_deadline: {type: Date, required: true},
     capacity: {type: Number, default: null},
+    bookingCount: {type: Number, default: 0},
     venue: {type: VenueSchema, required: true},
     organizer: {type: OrganizerSchema, required: true},
     agenda: {type: [AgendaSchema], default: []},

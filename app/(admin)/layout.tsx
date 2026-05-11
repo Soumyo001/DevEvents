@@ -11,7 +11,7 @@ const Layout = ({children}: {children: React.ReactNode}) => {
       <div
           className='container mx-auto mt-20 sm:px-10 px-5 py-10'
       >
-          {children}
+        {children}
       </div>
     </div>
   );

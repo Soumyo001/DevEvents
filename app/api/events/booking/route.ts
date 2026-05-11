@@ -59,14 +59,12 @@ export const POST = async(req: Request) => {
                 {message: "You already booked with this email"}, {status: 409}
             );
         }
-        if(event.capacity !== null) {
-            if(!existingBooking) {
-                const booking_count = await Booking.countDocuments({event_id: event._id});
-                if(booking_count >= event.capacity) {
-                    return NextResponse.json(
-                        {message: "Event is fully booked"}, {status: 400}
-                    );
-                }
+        if(event.capacity !== null && !existingBooking) {
+            const { bookingCount } = event;
+            if(bookingCount >= event.capacity) {
+                return NextResponse.json(
+                    {message: "Event is fully booked"}, {status: 400}
+                );
             }
         }
         try {
@@ -78,6 +76,13 @@ export const POST = async(req: Request) => {
                 },
                 {upsert: true, returnDocument: "after"}
             ).lean<BookingItem>();
+            if(!existingBooking) {
+                await Event.findByIdAndUpdate(
+                    event_id, 
+                    {$inc: {bookingCount: 1} },
+                    {returnDocument: "after"}
+                );
+            }
             return NextResponse.json(
                 {message: "Booking successful!", booking}, {status: 200}
             );

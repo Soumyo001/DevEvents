@@ -6,7 +6,7 @@ export default function SyncTaxonomies(items: string[], type: "tag"|"audience") 
     items.map(async item => {
         const trimmed = item.trim();
         if(!trimmed) return;
-        const slug = trimmed.toLowerCase().replace(/\s+/g, "-");
+        const slug = trimmed.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
         await Taxonomy.findOneAndUpdate(
             {type, slug},
             {

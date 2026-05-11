@@ -12,10 +12,10 @@ import { toast } from "sonner";
 
 const EventCard = ({event, fav}: {event: EventItem, fav?: boolean}) => {
     const [isFav, setIsFav] = useState<boolean|undefined>(fav);
-    const debouncedSave = useDebouncedCallback(async(event_id: string, isFav: boolean) => {
+    const debouncedSave = useDebouncedCallback(async(event_id: string, setAsFav: boolean) => {
         try {
             const res = await fetch("/api/events/favourites", {
-                method: isFav? "POST":"DELETE",
+                method: setAsFav? "POST":"DELETE",
                 headers: {"Content-Type": "application/json"},
                 body: JSON.stringify({event_id}),
             });
@@ -23,7 +23,7 @@ const EventCard = ({event, fav}: {event: EventItem, fav?: boolean}) => {
             if(!res.ok) throw new Error(body.message);
         } catch (err: any) {
             toast.error(err.message);
-            setIsFav(!isFav);
+            setIsFav(!setAsFav);
         }
     }, 500);
     return (

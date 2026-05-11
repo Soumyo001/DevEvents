@@ -40,8 +40,8 @@ const FavouritesPage = () => {
     return favEvents.filter((event) => {
       if(trimmed) {
         const hasTitle = event.title.toLowerCase().includes(trimmed);
-        const hasTag = event.tags.some(e => e.toLowerCase().includes(trimmed));
-        const hasCity = event.venue.city?.toLowerCase().includes(trimmed);
+        const hasTag = event.tags.length === 0 ? false : event.tags.some(e => e.toLowerCase().includes(trimmed));
+        const hasCity = event.venue.city?.toLowerCase().includes(trimmed) ?? false;
         if(!hasTitle && !hasTag && !hasCity) return false;
       }
       return true;
@@ -59,7 +59,7 @@ const FavouritesPage = () => {
   }, [filtered]);
 
   return (
-    <div className='flex flex-col w-full min-h-dvh'>
+    <div className='flex flex-col w-full'>
       <section className="mb-7">
         <h1 className="text-2xl text-primary text-left font-bold">Your favourites</h1>
         <p className="text-sm text-muted-foreground text-left font-semibold mb-2 mt-1">Events you've saved to revisit later</p>
@@ -80,6 +80,7 @@ const FavouritesPage = () => {
               type="text"
               size={32}
               placeholder="Search favourites..."
+              value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="rounded-sm pl-9 max-sm:pl-7 max-sm:text-xs max-sm:w-45 border-muted-foreground/30"
             />
@@ -106,7 +107,7 @@ const FavouritesPage = () => {
               <Loader/>
             </div>
           ):(
-            favEvents.length === 0 ? (
+            filtered.length === 0 ? (
               <div className="flex flex-col justify-center items-center w-full py-20 px-6 border border-dashed border-muted-foreground/40 bg-muted/30 rounded-lg">
                 <Heart className="w-8 h-8 text-muted-foreground mb-3"/>
                 <h3 className="text-base max-sm:text-sm text-primary text-center font-bold">No Favourites yet</h3>

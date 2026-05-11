@@ -30,6 +30,7 @@ export type EventItem = {
     end_datetime: string;
     registration_deadline: string;
     capacity: number|null;
+    bookingCount: number;
     venue: VenueItem;
     agenda: AgendaItem[];
     audience: string[];

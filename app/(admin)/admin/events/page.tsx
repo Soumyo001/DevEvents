@@ -1,9 +1,9 @@
-import React from 'react'
+import EventsManagementPage from "@/components/events-view"
 
-const Events = () => {
+const EventsPage = () => {
   return (
-    <div>Events</div>
+    <EventsManagementPage isAdmin={true}/>
   )
 }
 
-export default Events
+export default EventsPage
