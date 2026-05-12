@@ -115,7 +115,6 @@ const DisplayEventBySlug = ({slug, isAdmin = false}: {slug: string, isAdmin: boo
                 Icon={Calendar}
                 text={`Date: ${format(new Date(event.start_datetime), "do MMMM, yyyy")} - ${format(new Date(event.end_datetime), "do MMMM, yyyy")}`}
               />
-
             }
             {event?.start_datetime && event.end_datetime &&
               <EventDetailsItem
@@ -166,7 +165,8 @@ const DisplayEventBySlug = ({slug, isAdmin = false}: {slug: string, isAdmin: boo
               <div className='grid grid-cols-3 max-sm:grid-cols-1 gap-3'>
                 {similarEvents.map(event => 
                   <EventCard 
-                    key={event._id} 
+                    key={event._id}
+                    isAdmin={isAdmin}
                     event={event} 
                     fav={favEventsID.includes(event._id)}
                   />

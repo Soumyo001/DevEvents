@@ -3,10 +3,10 @@ import EventForm from '@/components/event-form';
 import Loader from '@/components/loader';
 import { EventItem } from '@/lib/types';
 import { useRouter } from 'next/navigation';
-import { use, useEffect, useState } from 'react'
+import { use, useEffect, useState, Suspense } from 'react'
 import { toast } from 'sonner';
 
-const EditEventPage = ({params}: {params: Promise<{slug: string}>}) => {
+const EditEventContent = ({params}: {params: Promise<{slug: string}>}) => {
     const { slug } = use(params);
     const [loading, setLoading] = useState<boolean>(false);
     const [event, setEvent] = useState<EventItem>();
@@ -31,14 +31,21 @@ const EditEventPage = ({params}: {params: Promise<{slug: string}>}) => {
         fetchEvent();
     }, [slug, router]);
 
-    if(loading) {
-        return (
+    return <EventForm mode='edit' initialData={event} slug={slug}/>;
+}
+
+const EditEventPage = ({params}: {params: Promise<{slug: string}>}) => {
+
+
+    return (
+        <Suspense fallback={
             <div className='flex items-center justify-center w-full min-h-75'>
                 <Loader/>
             </div>
-        )
-    }
-    return <EventForm mode='edit' initialData={event} slug={slug}/>
+        }>
+            <EditEventContent params={params}/>
+        </Suspense>
+    )
 }
 
 export default EditEventPage

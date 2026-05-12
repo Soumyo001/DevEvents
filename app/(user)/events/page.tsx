@@ -1,8 +1,8 @@
-import React from 'react'
+import EventsManagementPage from "@/components/events-view"
 
 const Events = () => {
   return (
-    <div>Events</div>
+    <EventsManagementPage isAdmin={false}/>
   )
 }
 

@@ -39,6 +39,11 @@ export const USERNAVBARITEM: NavItem[] = [
         id: "favoruites",
         name: "Favoruites",
         url: "/events/favourites"
+    },
+    {
+        id: "bookings",
+        name: "Bookings",
+        url: "/events/bookings"
     }
 ];
 

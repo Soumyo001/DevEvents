@@ -34,7 +34,7 @@ const EventsManagementPage = ({isAdmin = false}: {isAdmin: boolean}) => {
   const [events, setEvents] = useState<EventItem[]>([]);
   const [search, setSearch] = useState<string>("");
   const [page, setPage] = useState<number>(1);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -62,7 +62,7 @@ const EventsManagementPage = ({isAdmin = false}: {isAdmin: boolean}) => {
         const body = await res.json();
         if(!res.ok) throw new Error(body.message);
         setEvents(prev => prev.filter(event => event.slug !== slug));
-        toast.success("Event successfully deleted");
+        toast.success(body.message);
     } catch (err: any) {
         toast.error(err.message);
     }
@@ -86,11 +86,11 @@ const EventsManagementPage = ({isAdmin = false}: {isAdmin: boolean}) => {
     <div className="flex flex-col w-full">
       <div className="flex flex-wrap items-end justify-between gap-4 w-full mb-7">
         <div>
-            <h1 className="text-3xl text-left text-primary font-bold">
-              {isAdmin? "Event Management":"Browse all available events"}
+            <h1 className="text-2xl text-left text-primary font-bold">
+              {isAdmin? "Event Management":"Explore Events"}
             </h1>
             <p className="text-sm text-left text-muted-foreground font-semibold">
-                {isAdmin? "Manage all events on the platform":"Browse all available events"}
+                {isAdmin? "Manage, monitor, and oversee all events on the platform":"Discover and explore all available events across the platform"}
             </p>
         </div>
         {isAdmin && <Button asChild>
@@ -168,7 +168,7 @@ const EventsManagementPage = ({isAdmin = false}: {isAdmin: boolean}) => {
                             </div>
                           )}
                           <Link 
-                            href={`/admin/events/${event.slug}`}
+                            href={isAdmin? `/admin/events/${event.slug}`:`/events/${event.slug}`}
                             className="font-semibold hover:text-primary transition-colors duration-200"
                           >
                             {event.title}

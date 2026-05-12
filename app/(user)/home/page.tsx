@@ -1,9 +1,7 @@
-import React from 'react'
+import HomeSection from "@/components/home-section"
 
-const Home = () => {
-  return (
-    <div>Home</div>
-  )
+const Page = () => {
+  return <HomeSection isAdmin={false}/>
 }
 
-export default Home
+export default Page

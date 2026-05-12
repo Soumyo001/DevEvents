@@ -1,11 +1,58 @@
 import Booking from "@/lib/schemas/booking.schema";
 import User from "@/lib/schemas/user.schema";
 import Event from "@/lib/schemas/event.schema";
-import { BookingItem, UserItem, EventItem } from "@/lib/types";
+import { BookingItem, BookingWithEventItem, UserItem, EventItem } from "@/lib/types";
 import { BookingPayload } from "@/lib/validator/payload_validator/booking.payload";
 import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import connect from "@/lib/db";
+
+export const GET = async() => {
+    try {
+        const { userId, isAuthenticated } = await auth();
+        if(!userId || !isAuthenticated) {
+            return NextResponse.json(
+                {message: "Unauthorized. User must be logged in"}, {status: 401}
+            );
+        }
+        await connect();
+        const user = await User.findOne({clerk_id: userId}).lean<UserItem>();
+        if(!user) {
+            return NextResponse.json(
+                {message: "Warning! User account not synced. please re-login to sync your account"},
+                {status: 404}
+            );
+        }
+        if(user.role === "admin") {
+            return NextResponse.json(
+                {message: "Forbidden. Only non-admin users are allowed to view their bookings"},
+                {status: 403}
+            );
+        }
+        const bookings = await Booking.find({user_id: user._id})
+                            .populate("event_id")
+                            .sort({createdAt: -1})
+                            .lean<BookingWithEventItem[]>();
+        if(bookings.length === 0) {
+            return NextResponse.json(
+                {message: "No events booked yet", bookings: []}, {status: 200}
+            );
+        }
+        // const bookedEventIDs = bookings.map(item => item.event_id);
+        // const events = await Event.find({
+        //     _id: {$in: bookedEventIDs},
+        //     is_published: true
+        // }).lean<EventItem[]>();
+        return NextResponse.json(
+            {message: "Booked events fetched successfully", bookings},
+            {status: 200}
+        );
+    } catch (err: any) {
+        return NextResponse.json(
+            {message: `Server error: ${err.message}`}, {status: 500}
+        );
+    }
+}
 
 export const POST = async(req: Request) => {
     try {
@@ -19,7 +66,7 @@ export const POST = async(req: Request) => {
         const user = await User.findOne({clerk_id: userId}).lean<UserItem>();
         if(!user) {
             return NextResponse.json(
-                {message: "Warning! User not synced. please re-login to sync your account"},
+                {message: "Warning! User account not synced. please re-login to sync your account"},
                 {status: 404}
             );
         }

@@ -87,6 +87,12 @@ export const PUT = async(req: Request, {params}: {params: Promise<{slug: string}
             );
         }
         const data = parsed.data;
+        if(data.capacity !== null && data.capacity < event.bookingCount) {
+            return NextResponse.json(
+                {message: `Cannot reduce event capacity below current booking count ${event.bookingCount}`},
+                {status: 400}
+            );
+        }
         await SyncTaxonomies(data.tags, "tag");
         await SyncTaxonomies(data.audience, "audience");
         const updatedEvent = await Event.findOneAndUpdate(

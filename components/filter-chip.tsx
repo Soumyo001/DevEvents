@@ -10,7 +10,7 @@ const FilterChip = ({active, onClick, text}: {
         type="button"
         onClick={onClick}
         className={cn(
-            "px-2 py-1 border border-accent rounded-lg text-sm max-sm:text-xs text-muted-foreground font-semibold bg-background/30",
+            "px-4 py-1 border border-accent rounded-lg text-sm max-sm:text-xs text-muted-foreground font-semibold bg-background/30",
             active
                 ? "bg-accent/60 border-border text-primary"
                 : "hover:bg-accent/60"

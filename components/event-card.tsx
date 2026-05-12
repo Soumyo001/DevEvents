@@ -10,7 +10,7 @@ import { format } from "date-fns";
 import { useDebouncedCallback } from "use-debounce";
 import { toast } from "sonner";
 
-const EventCard = ({event, fav}: {event: EventItem, fav?: boolean}) => {
+const EventCard = ({event, fav, isAdmin = false}: {event: EventItem, fav?: boolean, isAdmin: boolean}) => {
     const [isFav, setIsFav] = useState<boolean|undefined>(fav);
     const debouncedSave = useDebouncedCallback(async(event_id: string, setAsFav: boolean) => {
         try {
@@ -28,10 +28,10 @@ const EventCard = ({event, fav}: {event: EventItem, fav?: boolean}) => {
     }, 500);
     return (
         <Link
-            href={`/admin/events/${event.slug}`}
+            href={isAdmin ? `/admin/events/${event.slug}`:`/events/${event.slug}`}
             className="group flex flex-col gap-4"
         >
-            <div className="relative w-full h-48 rounded-t-xl overflow-hidden">
+            <div className="relative w-full h-48 rounded-lg overflow-hidden">
                 <Button
                     type="button"
                     className="absolute top-2 right-2 z-10 rounded-full p-2 opacity-0 group-hover:opacity-100 max-md:opacity-100 bg-secondary/30 hover:bg-secondary/80 transition-colors duration-200"
