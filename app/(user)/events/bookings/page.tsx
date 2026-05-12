@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Ticket, TicketCheck, MapPin, Mail, Globe, Clock } from "lucide-react";
 import { Card } from "@/components/ui/card";
+import BookingTicket from "@/components/booking-ticket";
 import Loader from "@/components/loader";
 
 type Filter = "all"|"upcoming"|"past";
@@ -31,6 +32,23 @@ const BookingsPage = () => {
         }
         fetchBookedEvents();
     }, []);
+
+    const handleCancel = async (booking_id: string, event_id: string) => {
+        if(!confirm("Are you sure you want to cancel this booking ?")) return;
+        try {
+            const res = await fetch('/api/events/booking', {
+                method: "DELETE",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({event_id})
+            });
+            const body = await res.json();
+            if(!res.ok) throw new Error(body.message);
+            setBookedEvents(prev => prev.filter(item => item._id !== booking_id));
+            toast.success(body.message);
+        } catch (err: any) {
+            toast.error(err.message);
+        }
+    }
 
     const upcoming = useMemo(() => {
         const now = new Date();
@@ -84,13 +102,44 @@ const BookingsPage = () => {
                         <p className="text-xs text-muted-foreground text-center font-semibold max-w-sm">You haven't booked any events. Find one to attend!</p>
                     </div>
                 ):(
-                    <div className="flex flex-col items-start justify-start w-full">
-                        {bookedEvents.length > 0 && filter === "all" && 
-                            bookedEvents.map(e => (
-                                <div key={e._id}>{e.event_id.title}</div>
-                            ))
-                        }
-                    </div>
+                    <>
+                        {bookedEvents.length > 0 && filter === "all" && <div className="flex flex-col items-start justify-start w-full gap-3">
+                            <SectionDivider label="All" count={bookedEvents.length}/>
+                            {bookedEvents.map(e => 
+                                    <BookingTicket
+                                        key={e._id}
+                                        booking={e}
+                                        past={false}
+                                        onCancel={() => handleCancel(e._id, e.event_id._id)}
+                                    />
+                                )
+                            }
+                        </div>}
+                        {upcoming.length > 0 && filter === "upcoming" && <div className="flex flex-col items-start justify-start w-full gap-3">
+                            <SectionDivider label="Upcoming" count={upcoming.length}/>
+                            {upcoming.map(e => 
+                                    <BookingTicket
+                                        key={e._id}
+                                        booking={e}
+                                        past={false}
+                                        onCancel={() => handleCancel(e._id, e.event_id._id)}
+                                    />
+                                )
+                            }
+                        </div>}
+                        {past.length > 0 && filter === "past" && <div className="flex flex-col items-start justify-start w-full gap-3">
+                            <SectionDivider label="Past" count={past.length}/>
+                            {past.map(e => 
+                                    <BookingTicket
+                                        key={e._id}
+                                        booking={e}
+                                        past={true}
+                                        onCancel={() => {}}
+                                    />
+                                )
+                            }
+                        </div>}
+                    </>
                 )
             )}
         </div>

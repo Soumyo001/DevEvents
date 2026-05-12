@@ -147,3 +147,51 @@ export const POST = async(req: Request) => {
         );
     }
 }
+
+export const DELETE = async(req: Request) => {
+    try {
+        const { userId, isAuthenticated } = await auth();
+        if(!userId || !isAuthenticated) {
+            return NextResponse.json(
+                {message: "Unauthorized. User must be logged in"}, {status: 401}
+            );
+        }
+        await connect();
+        const user = await User.findOne({clerk_id: userId}).lean<UserItem>();
+        if(!user) {
+            return NextResponse.json(
+                {message: "Warning! User account not synced. please re-login to sync your account"},
+                {status: 404}
+            );
+        }
+        const { event_id } = await req.json();
+        const event = await Event.findById(event_id).lean<EventItem>();
+        if(!event) {
+            return NextResponse.json(
+                {message: "Event not found"}, {status: 404}
+            );
+        }
+        if(new Date() > new Date(event.registration_deadline)) {
+            return NextResponse.json(
+                {message: "Forbidden. User cannot cancel booking after registration deadline"},
+                {status: 403}
+            );
+        }
+        const deletedBooking = await Booking
+                                    .findOneAndDelete({event_id, user_id: user._id})
+                                    .lean<BookingItem>();
+        if(!deletedBooking) {
+            return NextResponse.json(
+                {message: "Booking cancelation failed. please try again"}, {status: 500}
+            );
+        }
+        await Event.findByIdAndUpdate(event_id, {$inc: {bookingCount: -1}});
+        return NextResponse.json(
+            {message: "Booking successfully canceled"}, {status: 200}
+        );
+    } catch (err: any) {
+        return NextResponse.json(
+            {message: `Server error: ${err.message}`}, {status: 500}
+        );
+    }
+}

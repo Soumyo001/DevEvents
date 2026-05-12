@@ -28,7 +28,6 @@ const DisplayBookingSection = ({image, title, event_id}: {
                 }).then(async res => {
                     const body = await res.json();
                     if(!res.ok) {
-                        if(body.errors) console.log(body.errors)
                         const errorMsg = body.errors 
                                     ? Object.values(body.errors).flat().join(", ")
                                     : body.message;
