@@ -55,7 +55,7 @@ const FavouritesPage = () => {
 
   const past = useMemo(() => {
     const now = new Date();
-    return filtered.filter(event => now > new Date(event.end_datetime));
+    return filtered.filter(event => now > new Date(event.start_datetime));
   }, [filtered]);
 
   return (

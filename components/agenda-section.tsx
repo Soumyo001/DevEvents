@@ -85,7 +85,7 @@ const AgendaSection = () => {
                             </Field>
                         )}
                     />
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-2 max-sm:grid-cols-1 gap-4">
                         <Controller
                             control={form.control}
                             name={`agenda.${index}.start_datetime`}

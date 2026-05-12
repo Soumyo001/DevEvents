@@ -6,6 +6,8 @@ import Favourite from "@/lib/schemas/favourite.schema";
 import { UserItem, EventItem } from "@/lib/types";
 import { auth } from "@clerk/nextjs/server";
 import connect from "@/lib/db";
+import { eventSchema } from "@/lib/validator/schema_validator/event.schema";
+import SyncTaxonomies from "@/lib/helpers/sync/sync-taxonomies";
 
 export const GET = async(req: Request, {params}: {params: Promise<{slug: string}>}) => {
     try {
@@ -48,6 +50,61 @@ export const GET = async(req: Request, {params}: {params: Promise<{slug: string}
         return NextResponse.json(
             {message: `Server error: ${err.message}`},
             {status: 500}
+        );
+    }
+}
+
+export const PUT = async(req: Request, {params}: {params: Promise<{slug: string}>}) => {
+    try {
+        const { userId, isAuthenticated } = await auth();
+        if(!userId || !isAuthenticated) {
+            return NextResponse.json(
+                {message: "Unauthorized. User must be logged in"}, {status: 401}
+            );
+        }
+        await connect();
+        const user = await User.findOne({clerk_id: userId}).lean<UserItem>();
+        if(!user || user.role !== "admin") {
+            return NextResponse.json(
+                {message: "Forbidden. Only admin users are allowed"}, {status: 403}
+            );
+        }
+        const { slug } = await params;
+        const event = await Event.findOne({slug}).lean<EventItem>();
+        if(!event) {
+            return NextResponse.json(
+                {message: "Event not found. Invalid update request"}, {status: 404}
+            );
+        }
+        const body = await req.json();
+        const parsed = eventSchema.safeParse(body);
+        if(!parsed.success) {
+            return NextResponse.json(
+                {
+                    message: "Invalid request data. please try again",
+                    errors: parsed.error.flatten().fieldErrors
+                }, {status: 400}
+            );
+        }
+        const data = parsed.data;
+        await SyncTaxonomies(data.tags, "tag");
+        await SyncTaxonomies(data.audience, "audience");
+        const updatedEvent = await Event.findOneAndUpdate(
+            {slug},
+            {...data},
+            {returnDocument: "after"}
+        ).lean<EventItem>();
+        if(!updatedEvent) {
+            return NextResponse.json(
+                {message: "Event update failed. please try again"}, {status: 500}
+            );
+        }
+        return NextResponse.json(
+            {message: "Event update successful", event: updatedEvent}, {status: 200}
+        );
+    } catch (err: any) {
+        return NextResponse.json(
+            {message: `Server error: ${err.message}`}, {status: 500}
         );
     }
 }
