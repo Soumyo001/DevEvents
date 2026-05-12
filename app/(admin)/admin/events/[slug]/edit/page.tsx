@@ -31,6 +31,14 @@ const EditEventContent = ({params}: {params: Promise<{slug: string}>}) => {
         fetchEvent();
     }, [slug, router]);
 
+    if(loading) {
+        return (
+            <div className='flex items-center justify-center w-full min-h-75'>
+                <Loader/>
+            </div>
+        )
+    }
+    
     return <EventForm mode='edit' initialData={event} slug={slug}/>;
 }
 
