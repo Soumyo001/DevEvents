@@ -14,7 +14,7 @@ import FilterChip from "@/components/filter-chip"
 
 type Filter = "upcoming"|"past"|"all";
 
-const FavouritesContent = ({isAdmin = false}: {isAdmin: boolean}) => {
+const FavouritesSectionContent = ({isAdmin = false}: {isAdmin: boolean}) => {
     const [loading, setLoading] = useState<boolean>(true);
     const [search, setSearch] = useState<string>("");
     const [filter, setFilter] = useState<Filter>("all");
@@ -177,7 +177,7 @@ const FavouritesSection = ({isAdmin = false}: {isAdmin: boolean}) => {
                 <Loader/>
             </div>
         }>
-            <FavouritesContent isAdmin={isAdmin}/>
+            <FavouritesSectionContent isAdmin={isAdmin}/>
         </Suspense>
     )
 }

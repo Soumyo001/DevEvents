@@ -1,13 +1,26 @@
-import { use } from 'react'
+import { Suspense, use } from 'react'
 import DisplayEventBySlug from '@/components/display-events-by-slug';
+import Loader from '@/components/loader';
 
-const EventBySlug = ({params}: {params: Promise<{slug: string}>}) => {
+const EventBySlugContent = ({params}: {params: Promise<{slug: string}>}) => {
   const { slug } = use(params);
   return (
     <DisplayEventBySlug
       slug={slug}
       isAdmin={true}
     />
+  )
+}
+
+const EventBySlug = ({params}: {params: Promise<{slug: string}>}) => {
+  return (
+    <Suspense fallback={
+        <div className='flex justify-center items-center w-full min-h-dvh'>
+          <Loader/>
+        </div>
+    }>
+      <EventBySlugContent params={params}/>
+    </Suspense>
   )
 }
 
