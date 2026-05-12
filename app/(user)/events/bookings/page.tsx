@@ -1,7 +1,7 @@
 'use client'
 import SectionDivider from "@/components/section-divider"
 import FilterChip from "@/components/filter-chip"
-import { useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import { BookingWithEventItem } from "@/lib/types";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
@@ -11,7 +11,7 @@ import BookingTicket from "@/components/booking-ticket";
 import Loader from "@/components/loader";
 
 type Filter = "all"|"upcoming"|"past";
-const BookingsPage = () => {
+const BookingsPageContent = () => {
     const [filter, setFilter] = useState<Filter>("all");
     const [bookedEvents, setBookedEvents] = useState<BookingWithEventItem[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
@@ -144,6 +144,18 @@ const BookingsPage = () => {
             )}
         </div>
       </div>
+    )
+}
+
+const BookingsPage = () => {
+    return (
+        <Suspense fallback={
+            <div className='flex justify-center items-center w-full min-h-dvh'>
+              <Loader/>
+            </div>
+        }>
+            <BookingsPageContent/>
+        </Suspense>
     )
 }
 
