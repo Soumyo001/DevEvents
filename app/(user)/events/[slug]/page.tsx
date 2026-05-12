@@ -14,7 +14,7 @@ const EventBySlug = ({params}: {params: Promise<{slug: string}>}) => {
               <Loader/>
             </div>
         }>
-            <EventBySlug params={params}/>
+            <EventBySlugContent params={params}/>
         </Suspense>
     )
 }
