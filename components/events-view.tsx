@@ -149,7 +149,7 @@ const EventsManagementPage = ({isAdmin = false}: {isAdmin: boolean}) => {
                 </TableHeader>
                 <TableBody>
                   {paginated.map(event => (
-                    <TableRow>
+                    <TableRow key={event._id}>
                       <TableCell>
                         <div className="flex gap-3 items-center">
                           {event.image ? (
@@ -230,6 +230,7 @@ const EventsManagementPage = ({isAdmin = false}: {isAdmin: boolean}) => {
             <div className="md:hidden flex flex-col gap-3">
               {paginated.map(event => 
                 <EventsMobileView
+                  key={event._id}
                   event={event}
                   isAdmin={isAdmin}
                   onDelete={handleDelete}
