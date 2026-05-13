@@ -10,6 +10,7 @@ export default async function connect() {
             break;
         case 2:
             console.log("Connecting...");
+            await mongoose.connection.asPromise();
             break;
         default:
             try {
