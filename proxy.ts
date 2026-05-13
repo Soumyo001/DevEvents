@@ -9,7 +9,8 @@ export default clerkMiddleware(async (auth, req) => {
     const { userId, sessionClaims } = await auth();
     const role = sessionClaims?.metadata?.role;
 
-    if(isApiRoute(req)) return NextResponse.next();
+    // use this to allow API routes from literally anywhere
+    // if(isApiRoute(req)) return NextResponse.next();
 
     if(!userId && !isPublicRoute(req)) {
         return NextResponse.redirect(new URL("/login", req.url));
