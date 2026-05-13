@@ -50,6 +50,7 @@ const EventCard = ({event, fav, isAdmin = false}: {event: EventItem, fav?: boole
                         src={event.image}
                         alt={event.title}
                         fill
+                        loading="eager"
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                         className="object-cover group-hover:scale-105 transition-transform duration-200"
                     />
