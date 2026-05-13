@@ -15,7 +15,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { signUpSchema, signUpSchemaType } from "@/lib/validator/schema_validator/sign-up.schema";
 import { useSignUp } from "@clerk/nextjs/legacy";
-import { useSession } from "@clerk/nextjs";
+import { useSession, useClerk } from "@clerk/nextjs";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -30,7 +30,7 @@ const page = () => {
   const [verificationError, setVerificationError] = useState<string|null>(null);
   const [code, setCode] = useState<string>("");
   const { signUp, isLoaded, setActive } = useSignUp();
-  const { session } = useSession();
+  const { signOut } = useClerk();
 
   const {
     register,
@@ -64,6 +64,7 @@ const page = () => {
     try {
       const result = await signUp.attemptEmailAddressVerification({code: code});
       if(result.status === "complete") {
+        let synced = false;
         await setActive({session: result.createdSessionId});
         await toast.promise(
           fetch("/api/user", {
@@ -73,6 +74,7 @@ const page = () => {
           }).then(async res => {
             const body = await res.json();
             if(!res.ok) throw new Error(body.message);
+            synced = true;
             return body.message;
           }),
           {
@@ -81,7 +83,10 @@ const page = () => {
             error: (err: Error) => err.message ?? "Failed to sync account. You can retry sync on your next login"
           }
         );
-        
+        if(synced) {
+            await signOut();
+            toast.info("Account synced! Please log in to continue");
+        }
       } else {
         setVerificationError("Verification failed. Please try again");
       }
