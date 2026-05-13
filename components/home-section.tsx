@@ -21,10 +21,14 @@ const HomeSection = ({isAdmin = false}: {isAdmin: boolean}) => {
         ]);
         const eventBody = await eventRes.json();
         const favBody = await favRes.json();
-        setEvents(eventBody.events);
-        setFavEvents(favBody.events.map((item: EventItem) => item._id));
+        if(eventRes.ok)  setEvents(eventBody.events);
+        if(favRes.ok) setFavEvents(favBody.events.map((item: EventItem) => item._id));
+
+        if(!eventRes.ok && !favRes.ok) throw new Error([eventBody.message, favBody.message].join(", "));
+        else if(!eventRes.ok) throw new Error(eventBody.message);
+        else if(!favRes.ok) throw new Error(favBody.message);
       } catch (err: any) { 
-        toast.error(`Unknow error occured: ${err.message}`)
+        toast.error(`Unknow error occured: ${err.message}`);
       } finally {
         setLoading(false);
       }
