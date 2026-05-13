@@ -71,7 +71,7 @@ const DisplayEventBySlug = ({slug, isAdmin = false}: {slug: string, isAdmin: boo
         </div>
       ):(
         <div className='flex flex-col justify-start items-start w-full mb-7'>
-          <div className='flex flex-wrap justify-between items-start gap-3 mb-15'>
+          <div className='flex flex-wrap justify-between items-start w-full gap-3 mb-15'>
             <div className='flex flex-col items-start gap-2'>
               <h1 className='text-5xl text-primary text-left font-bold'>{event?.title}</h1>
               <p className='text-sm text-muted-foreground'>{event?.description}</p>
