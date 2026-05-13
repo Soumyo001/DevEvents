@@ -68,7 +68,8 @@ const page = () => {
         }
         
       } else {
-        setAuthError("Authentication failed. Please try again.");
+        setAuthError(`Status: ${result.status}`);
+        // setAuthError("Authentication failed. Please try again.");
       }
     } catch (err: any) {
       setAuthError(err.errors?.[0]?.longMessage ?? `Unknown error occurred: ${err}`);
