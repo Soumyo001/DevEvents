@@ -77,7 +77,7 @@ const page = () => {
 
   return (
     <div className="flex flex-col justify-center items-center w-full min-h-dvh p-10 max-sm:p-6">
-      <Card className="w-full max-w-md">
+      <Card className="w-full max-w-md max-sm:max-w-sm">
         <CardHeader>
           <CardTitle>Login</CardTitle>
           <CardDescription>Enter your credentials</CardDescription>
