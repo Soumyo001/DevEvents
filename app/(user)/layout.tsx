@@ -8,7 +8,7 @@ const Layout = ({children}: {children: React.ReactNode}) => {
         <NavBar
           items={USERNAVBARITEM}
         />
-        <div className='container mx-auto mt-20 max-sm:px-5 px-10 py-4'>
+        <div className='container mx-auto mt-20 max-sm:px-5 px-10 py-10'>
           {children}
         </div>
     </div>
