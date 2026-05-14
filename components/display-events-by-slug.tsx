@@ -10,6 +10,7 @@ import AgendaDisplaySection from '@/components/agenda-display-section';
 import EventCard from '@/components/event-card';
 import { Badge } from '@/components/ui/badge';
 import { format } from 'date-fns';
+import { toZonedTime } from 'date-fns-tz';
 import { Button } from '@/components/ui/button';
 import { useDebouncedCallback } from 'use-debounce';
 import { Heart, Edit } from 'lucide-react';
@@ -110,16 +111,16 @@ const DisplayEventBySlug = ({slug, isAdmin = false}: {slug: string, isAdmin: boo
           </div>
           <div className='mb-7 space-y-3'>
             <h3 className='text-2xl text-primary text-left font-bold mb-3'>Event Details</h3>
-            {event?.start_datetime && event.end_datetime &&
+            {event?.start_datetime && event?.end_datetime &&
               <EventDetailsItem
                 Icon={Calendar}
-                text={`Date: ${format(new Date(event.start_datetime), "do MMMM, yyyy")} - ${format(new Date(event.end_datetime), "do MMMM, yyyy")}`}
+                text={`Date: ${format(toZonedTime(event.start_datetime, event.timezone), "do MMMM, yyyy")} - ${format(toZonedTime(event.end_datetime, event.timezone), "do MMMM, yyyy")}`}
               />
             }
-            {event?.start_datetime && event.end_datetime &&
+            {event?.start_datetime && event?.end_datetime &&
               <EventDetailsItem
                 Icon={Clock}
-                text={`Time: ${format(new Date(event.start_datetime), "hh:mm a")} - ${format(new Date(event.end_datetime), "hh:mm a")}`}
+                text={`Time: ${format(toZonedTime(event.start_datetime, event.timezone), "hh:mm a")} - ${format(toZonedTime(event.end_datetime, event.timezone), "hh:mm a")}`}
               />
             }
             {event?.venue && event.venue.mode !== "Online" && 
@@ -144,7 +145,7 @@ const DisplayEventBySlug = ({slug, isAdmin = false}: {slug: string, isAdmin: boo
           </div>
           {event?.agenda && event.agenda.length > 0 && <div className='mb-7 space-y-3'>
             <h3 className='text-2xl text-primary text-left font-bold mb-3'>Agenda</h3>
-            <AgendaDisplaySection agenda={event.agenda}/>
+            <AgendaDisplaySection agenda={event.agenda} timezone={event.timezone}/>
           </div>}
             <div className='mb-7 space-y-3'>
               <h3 className='text-2xl text-left text-primary font-bold mb-3'>{`About the Organizer (${event?.organizer.organizer_name})`}</h3>
