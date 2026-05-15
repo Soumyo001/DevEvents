@@ -46,7 +46,7 @@ const page = () => {
       const result = await signIn.create({identifier: data.identifier, password: data.password});
       if(result.status === "complete") {
         await setActive({session: result.createdSessionId});
-        const res = await fetch("/api/user");
+        const res = await fetch("/api/user", { cache: 'no-store' });
         if(res.status === 404) {
           toast.warning("User not synced.");
           await toast.promise(
